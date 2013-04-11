@@ -56,12 +56,17 @@ public class FileImportWindow extends JFrame {
 		
 		options.add(new JLabel("Start Index: "));
 		options.add(start);
-				
+		options.add(Box.createHorizontalStrut(10));
 		options.add(new JLabel("Stop Index: "));
 		options.add(stop);
 		
-		resultsPanel.add(options);
-		resultsPanel.add(results);
+		Box midBox = Box.createVerticalBox();
+		
+		midBox.add(options);
+		midBox.add(Box.createVerticalStrut(20));
+		midBox.add(results);
+		
+		resultsPanel.add(midBox);
 
 		contentPanel.add(leftBox, BorderLayout.NORTH);
 		contentPanel.add(resultsPanel, BorderLayout.CENTER);
@@ -102,7 +107,7 @@ public class FileImportWindow extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			int startIndex = 0;
+			int startIndex = 1;
 			int stopIndex = dna.length() - 1;
 			
 			try{
