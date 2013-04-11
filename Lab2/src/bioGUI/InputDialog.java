@@ -24,6 +24,8 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 
+import bioUtils.DNAUtil;
+
 import java.io.File;
 import java.io.FileWriter;
 
@@ -252,7 +254,7 @@ public class InputDialog extends JDialog {
             }
 
             else {
-               mDisplayArea.setText("Code output goes here!\n");
+               mDisplayArea.setText(DNAUtil.analyze(mFile.getText()));
             }
          }
       });
