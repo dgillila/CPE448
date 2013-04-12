@@ -32,6 +32,7 @@ public class DNAUtil {
 
 		//Kick off the threads (maybe stop when curIndex + winSize > lastIndex ?)
 		//TODO When do we stop?
+		//TODO and how do we know if we ran over the end of the file? Maybe store some flag in a result?
 		for(int i = 0; i < 50; i++) {
 			service.execute(new CalcThread(file, curIndex, size, results));
 			curIndex += shift;
