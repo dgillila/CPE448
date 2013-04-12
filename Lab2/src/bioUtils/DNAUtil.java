@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -16,7 +17,7 @@ public class DNAUtil {
 		final ExecutorService service;
 		final Future<Result> task;
 		
-		Map<Integer, Result> results = new HashMap<Integer, Result>();
+		Map<Integer, Result> results = new ConcurrentHashMap<Integer, Result>();
 		File file = new File(dnaFile);
 		
 		service = Executors.newFixedThreadPool(100);
