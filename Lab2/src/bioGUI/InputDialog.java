@@ -254,7 +254,35 @@ public class InputDialog extends JDialog {
             }
 
             else {
-               mDisplayArea.setText(DNAUtil.analyze(mFile.getText()));
+            	
+            	int startPos = -1;
+            	int endPos = -1;
+            	
+            	int windowSize = -1;
+            	int windowShift = -1;
+            	
+            	try {
+					startPos = Integer.parseInt(mStartPos.getText());
+				} catch (Exception ex) { }
+
+            	try {
+					endPos = Integer.parseInt(mEndPos.getText());
+				} catch (Exception ex) { }
+            	
+            	try {
+					windowSize = Integer.parseInt(mWinSize.getText());
+				} catch (Exception ex) { }
+            	
+            	try {
+					windowShift = Integer.parseInt(mShiftIncr.getText());
+				} catch (Exception ex) { }
+            	
+            	if(windowShift > windowSize) {
+            		JOptionPane.showMessageDialog(null, "Window shift cannot be greater than window size.");
+            		return;
+            	}
+            	
+               mDisplayArea.setText(DNAUtil.analyze(mFile.getText(), startPos, endPos, windowShift, windowSize));
             }
          }
       });
