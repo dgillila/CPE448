@@ -31,7 +31,8 @@ public class DNAUtil {
 		int shift = winShift < 0 ? size : winShift;
 
 		//Kick off the threads (maybe stop when curIndex + winSize > lastIndex ?)
-		for(int i = 0; i < 6; i++) {
+		//TODO When do we stop?
+		for(int i = 0; i < 50; i++) {
 			service.execute(new CalcThread(file, curIndex, size, results));
 			curIndex += shift;
 		}
@@ -39,16 +40,31 @@ public class DNAUtil {
 		//Wait until all threads terminate (max wait of 1 minute - may need to make this longer)
 		service.shutdown();
 		service.awaitTermination(1, TimeUnit.MINUTES);
-
-		//Sort the results for better display
-		Map<Integer, Result> sortedRes = new TreeMap<Integer, Result>(results);
 		
 		DecimalFormat df = new DecimalFormat("#.##");
 		
 		//And build the result string
-		String rtn = "Range" + " ,\t" + "min" + " ,\t" + "max\n";
-		for(Integer a : sortedRes.keySet()) {
-			rtn += a + " - " + (a+size) + " ,\t" + df.format(results.get(a).min) + " ,\t" + df.format(results.get(a).max) + "\n";
+		String rtn = "";
+		
+		if(winShift > 0 || winSize > 0) {
+			rtn = "Range" + " ,\t" + "min" + " ,\t" + "max\n";
+			
+			//Sort the results for better display
+			Map<Integer, Result> sortedRes = new TreeMap<Integer, Result>(results);
+			
+			for(Integer a : sortedRes.keySet()) {
+				rtn += a + " - " + (a+size) + " ,\t" + df.format(results.get(a).min) + " ,\t" + df.format(results.get(a).max) + "\n";
+			}
+		} else {
+			double minTot = 0;
+			double maxTot = 0;
+			
+			for(Integer a : results.keySet()) {
+				minTot += results.get(a).min;
+				maxTot += results.get(a).max;
+			}
+			rtn = "Total min ,\tTotal max\n";
+			rtn += df.format(minTot/results.keySet().size()) + " ,\t" + df.format(maxTot/results.keySet().size());
 		}
 
 		return rtn;

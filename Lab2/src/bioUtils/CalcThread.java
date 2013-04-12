@@ -4,11 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
 
 import bioUtils.Result;
 
-public class CalcThread implements Callable<Result>, Runnable {
+public class CalcThread implements Runnable {
 
 	protected File f = null;
 	protected int sIndex = 0;
@@ -40,14 +39,35 @@ public class CalcThread implements Callable<Result>, Runnable {
 			stream.read();
 			
 			//We're now at index 0 (one before characters start)			
-			// Skip to correct location in the file
-			temp = new byte[sIndex];
-			stream.read(temp);
+			// Skip to correct location in the file (exclude spaces and newlines)
 			
-			//Read the window
-//			System.out.println((char)stream.read());
+			//TODO THIS IS SLOW (NEEDS TO BE REDONE)
+			int i = 0;
+			while(i < sIndex) {
+				int b = stream.read();
+				if(b > 48) {
+					i++;
+				}
+				if(b == -1) {
+					stream.close();
+					return;
+				}
+			}
+			
+			//Read in a string of windowSize (exclude spaces and newlines)
+			//TODO THIS IS ALSO SLOW (SAME THING)
+			i = 0;
 			temp = new byte[winSize];
-			stream.read(temp);
+			while(i < winSize) {
+				int b = stream.read();
+				if(b > 48) {
+					temp[i] = (byte)b;
+					i++;
+				}
+				if(b == -1) {
+					break;
+				}
+			}
 			
 			String segment = new String(temp);
 			
@@ -58,23 +78,9 @@ public class CalcThread implements Callable<Result>, Runnable {
 			stream.close();
 			scan.close();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		return;
-	}
-
-	@Override
-	public Result call() throws Exception {
-		// Result rtn = new Result();
-		//
-		// Scanner scan = new Scanner(f);
-		//
-		// System.out.println(scan.next());
-		//
-		// rtn.min = 0.3;
-		// rtn.max = 3.4;
-		//
-		return null;
 	}
 
 }
