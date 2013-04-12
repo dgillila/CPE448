@@ -30,4 +30,20 @@ public class DNAUtil {
 		return "Test";
 	}
 
+    public static float findGcContentForSegment(String segment, bool treatNAsGc) {
+	
+	int total;
+	int gc;
+
+	for(int i = 0; i < segment.length(); i++) {
+	    total++;
+	    if (segment.charAt(i) == 'G' || segment.charAt(i) == 'C') {
+		gc++;
+	    } else if (segment.charAt(i) == 'N' && treatNAsGc) {
+		gc++;
+	    }
+	}
+
+	return (float) gc / total;
+    }
 }
