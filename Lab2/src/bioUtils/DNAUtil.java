@@ -2,6 +2,7 @@ package bioUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -27,47 +28,35 @@ public class DNAUtil {
 		int curIndex = startIndex < 0 ? 1 : startIndex;
 		int lastIndex = stopIndex < 0 ? -1 : stopIndex;
 		int size = winSize < 0 ? 1000 : winSize;
-		int shift = winShift < 0 ? winSize : winShift;
+		int shift = winShift < 0 ? size : winShift;
 
-		//Kick off the threads stop when curIndex + winSize > lastIndex
+		//Kick off the threads (maybe stop when curIndex + winSize > lastIndex ?)
 		for(int i = 0; i < 6; i++) {
 			service.execute(new CalcThread(file, curIndex, size, results));
 			curIndex += shift;
 		}
 
-		//Wait until all threads terminate
+		//Wait until all threads terminate (max wait of 1 minute - may need to make this longer)
 		service.shutdown();
 		service.awaitTermination(1, TimeUnit.MINUTES);
 
-		
+		//Sort the results for better display
 		Map<Integer, Result> sortedRes = new TreeMap<Integer, Result>(results);
-		for(Integer a : sortedRes.keySet()) {
-			System.out.println(a);
-		}
 		
-		// Scanner fileScan;
-		// try {
-		// fileScan = new Scanner(file);
-		//
-		// // Skip first line - does not contain sequence
-		// fileScan.nextLine();
-		//
-		// while (fileScan.hasNextLine()) {
-		// // sequence += fileScan.nextLine();
-		// }
-		//
-		// fileScan.close();
-		// } catch (FileNotFoundException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+		DecimalFormat df = new DecimalFormat("#.##");
+		
+		//And build the result string
+		String rtn = "Range" + " ,\t" + "min" + " ,\t" + "max\n";
+		for(Integer a : sortedRes.keySet()) {
+			rtn += a + " - " + (a+size) + " ,\t" + df.format(results.get(a).min) + " ,\t" + df.format(results.get(a).max) + "\n";
+		}
 
-		return "Test";
+		return rtn;
 	}
 
 	public static Result findGcContentForSegment(String segment) {
 
-		int total = 0;
+		double total = 0;
 		int gc = 0;
 		int n = 0;
 
@@ -81,8 +70,8 @@ public class DNAUtil {
 		}
 
 		Result rtn = new Result();
-		rtn.max = (double) gc + n / total;
-		rtn.min = (double) gc / total;
+		rtn.max = 100 * (double) (gc + n) / total;
+		rtn.min = 100 * (double) gc / total;
 
 		return rtn;
 	}

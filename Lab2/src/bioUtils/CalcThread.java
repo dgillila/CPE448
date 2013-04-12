@@ -49,9 +49,11 @@ public class CalcThread implements Callable<Result>, Runnable {
 			temp = new byte[winSize];
 			stream.read(temp);
 			
-			String segment = temp.toString();
+			String segment = new String(temp);
 			
-			resMap.put(sIndex, DNAUtil.findGcContentForSegment(segment));
+			Result res = DNAUtil.findGcContentForSegment(segment);
+			
+			resMap.put(sIndex, res);
 			
 			stream.close();
 			scan.close();
