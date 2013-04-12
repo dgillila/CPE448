@@ -1,5 +1,6 @@
 package bioUtils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
@@ -26,23 +27,34 @@ public class CalcThread implements Runnable {
 	public void run() {
 		
 		Scanner scan = null;
-		FileInputStream stream = null;
+		BufferedInputStream stream = null;
 		
 		try {
 			scan = new Scanner(f);
-			stream = new FileInputStream(f);
-
+			
+			FileInputStream fStream = new FileInputStream(f);
+			stream = new BufferedInputStream(fStream);
 			// Skip first line - does not contain sequence
 			String header = scan.nextLine();
 			byte[] temp = new byte[header.length()];
 			stream.read(temp);
-			stream.read();
 			
+			//skip any other special characters
+			int waste = 0;
+			boolean lazyFlag = false;
+			while(waste < 40) {
+				lazyFlag=true;
+				stream.mark(2);
+				waste = stream.read();
+			}
+			if(lazyFlag) {
+				stream.reset();
+			}
 			//We're now at index 0 (one before characters start)			
 			// Skip to correct location in the file (exclude spaces and newlines)
 			
 			//TODO THIS IS SLOW (NEEDS TO BE REDONE)
-			int i = 0;
+			int i = 1;
 			while(i < sIndex) {
 				int b = stream.read();
 				if(b > 48) {

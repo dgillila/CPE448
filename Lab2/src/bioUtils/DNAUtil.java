@@ -33,7 +33,7 @@ public class DNAUtil {
 		//Kick off the threads (maybe stop when curIndex + winSize > lastIndex ?)
 		//TODO When do we stop?
 		//TODO and how do we know if we ran over the end of the file? Maybe store some flag in a result?
-		for(int i = 0; i < 50; i++) {
+		for(int i = 0; i < 10; i++) {
 			service.execute(new CalcThread(file, curIndex, size, results));
 			curIndex += shift;
 		}
@@ -54,7 +54,7 @@ public class DNAUtil {
 			Map<Integer, Result> sortedRes = new TreeMap<Integer, Result>(results);
 			
 			for(Integer a : sortedRes.keySet()) {
-				rtn += a + " - " + (a+size) + " ,\t" + df.format(results.get(a).min) + " ,\t" + df.format(results.get(a).max) + "\n";
+				rtn += a + " - " + (a+size-1) + " ,\t" + df.format(results.get(a).min) + " ,\t" + df.format(results.get(a).max) + "\n";
 			}
 		} else {
 			double minTot = 0;
