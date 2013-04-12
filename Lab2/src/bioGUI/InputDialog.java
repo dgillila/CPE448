@@ -281,6 +281,12 @@ public class InputDialog extends JDialog {
             		JOptionPane.showMessageDialog(null, "Window shift cannot be greater than window size.");
             		return;
             	}
+            	if(startPos > endPos && startPos != -1 && endPos != -1) {
+            		JOptionPane.showMessageDialog(null, "Start Position cannot be greater than end position");
+            		return;
+            	}
+            	
+            	
             	try {
             		mDisplayArea.setText(DNAUtil.analyze(mFile.getText(), startPos, endPos, windowShift, windowSize));
             	}
