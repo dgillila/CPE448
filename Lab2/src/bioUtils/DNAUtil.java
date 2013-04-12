@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class DNAUtil {
 	
-	public static String analyze(String dnaFile, int startIndex, int stopIndex, int winShift, int winSize) {
+	public static String analyze(String dnaFile, int startIndex, int stopIndex, int winShift, int winSize) throws Exception {
 				
 		File file = new File(dnaFile);
 		Scanner fileScan;

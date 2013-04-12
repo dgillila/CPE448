@@ -281,8 +281,14 @@ public class InputDialog extends JDialog {
             		JOptionPane.showMessageDialog(null, "Window shift cannot be greater than window size.");
             		return;
             	}
-            	
-               mDisplayArea.setText(DNAUtil.analyze(mFile.getText(), startPos, endPos, windowShift, windowSize));
+            	try {
+            		mDisplayArea.setText(DNAUtil.analyze(mFile.getText(), startPos, endPos, windowShift, windowSize));
+            	}
+            	catch(Exception ex) {
+            		mDisplayArea.setText("Error. Please try again.");
+            		JOptionPane.showMessageDialog(null, "Parameter Error");
+            		return;
+            	}
             }
          }
       });
