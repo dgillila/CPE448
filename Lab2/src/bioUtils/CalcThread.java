@@ -42,6 +42,10 @@ public class CalcThread implements Runnable {
 				if(res > 40) {
 					i++;
 				}
+				if(res == -1) {
+					input.close();
+					return;
+				}
 			}
 			
 			boolean end = false;
