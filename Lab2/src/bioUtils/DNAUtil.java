@@ -10,6 +10,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class DNAUtil {
+	
+	
+	public static String singleAnalyze(String dnaFile, int startIndex, int stopIndex, int winShift, int winSize) {
+		
+		Map<Integer, Result> results = new ConcurrentHashMap<Integer, Result>();
+		File file = new File(dnaFile);
+		
+		// Check and initialize all variables
+		int curIndex = startIndex < 0 ? 1 : startIndex;
+		int lastIndex = stopIndex < 0 ? -1 : stopIndex;
+		int size = winSize < 0 ? 1000 : winSize;
+		int shift = winShift < 0 ? size : winShift;
+		
+		
+		return null;
+	}
+	
 
 	public static String analyze(String dnaFile, int startIndex, int stopIndex,
 			int winShift, int winSize) throws Exception {

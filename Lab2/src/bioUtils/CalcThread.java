@@ -72,7 +72,7 @@ public class CalcThread implements Runnable {
 				
 				Result res = DNAUtil.findGcContentForSegment(segment.toString());
 				if(!res.max.isNaN() && !res.min.isNaN()) {
-					if(curIndex <= lIndex || lIndex == -1) {
+					if(curIndex <= lIndex + 1 || lIndex == -1) {
 						resMap.put(startIndex, res);
 					}
 				}
