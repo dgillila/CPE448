@@ -1,10 +1,8 @@
 package bioUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -29,12 +27,10 @@ public class DNAUtil {
 		int lastIndex = stopIndex < 0 ? -1 : stopIndex;
 		int size = winSize < 0 ? 1000 : winSize;
 		int shift = winShift < 0 ? size : winShift;
-
-		//Kick off the threads (maybe stop when curIndex + winSize > lastIndex ?)
-		//TODO When do we stop?
-		//TODO and how do we know if we ran over the end of the file? Maybe store some flag in a result?
-		for(int i = 0; i < 10; i++) {
-			service.execute(new CalcThread(file, curIndex, size, results));
+		
+		//Kick off the threads
+		for(int i = 0; i < size/shift; i++) {
+			service.execute(new CalcThread(file, curIndex, lastIndex, size, results));
 			curIndex += shift;
 		}
 

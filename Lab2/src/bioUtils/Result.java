@@ -2,7 +2,6 @@ package bioUtils;
 
 public class Result {
 
-	public double min;
-	public double max;
-	
+	public Double min;
+	public Double max;
 }

@@ -1,10 +1,9 @@
 package bioUtils;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.util.Map;
-import java.util.Scanner;
 
 import bioUtils.Result;
 
@@ -14,84 +13,71 @@ public class CalcThread implements Runnable {
 	protected int sIndex = 0;
 	protected int winSize = 0;
 	protected Map<Integer, Result> resMap = null;
+	protected int lIndex = -1;
 
-	public CalcThread(File val, int startIndex, int windowSize,
-			Map<Integer, Result> map) {
+	public CalcThread(File val, int startIndex, int lastIndex, int windowSize, Map<Integer, Result> map) {
 		
 		this.f = val;
 		this.sIndex = startIndex;
 		this.winSize = windowSize;
 		this.resMap = map;
+		this.lIndex = lastIndex;
 	}
 
 	public void run() {
 		
-		Scanner scan = null;
-		BufferedInputStream stream = null;
+		BufferedReader reader = null;
+		int curIndex = sIndex;
 		
 		try {
-			scan = new Scanner(f);
+			FileReader input = new FileReader(f);
+			reader = new BufferedReader(input);
 			
-			FileInputStream fStream = new FileInputStream(f);
-			stream = new BufferedInputStream(fStream);
-			// Skip first line - does not contain sequence
-			String header = scan.nextLine();
-			byte[] temp = new byte[header.length()];
-			stream.read(temp);
+			//Skip the first line
+			reader.readLine();
 			
-			//skip any other special characters
-			int waste = 0;
-			boolean lazyFlag = false;
-			while(waste < 40) {
-				lazyFlag=true;
-				stream.mark(2);
-				waste = stream.read();
-			}
-			if(lazyFlag) {
-				stream.reset();
-			}
-			//We're now at index 0 (one before characters start)			
-			// Skip to correct location in the file (exclude spaces and newlines)
-			
-			//TODO THIS IS SLOW (NEEDS TO BE REDONE)
-			int i = 1;
-			while(i < sIndex) {
-				int b = stream.read();
-				if(b > 48) {
+			//Get to the start index
+			for(int i = 1; i < sIndex;) {
+				int res = reader.read();
+				if(res > 40) {
 					i++;
 				}
-				if(b == -1) {
-					stream.close();
-					return;
-				}
 			}
 			
-			//Read in a string of windowSize (exclude spaces and newlines)
-			//TODO THIS IS ALSO SLOW (SAME THING)
-			i = 0;
-			temp = new byte[winSize];
-			while(i < winSize) {
-				int b = stream.read();
-				if(b > 48) {
-					temp[i] = (byte)b;
-					i++;
+			boolean end = false;
+			
+			//Continue to read window sizes until we reach either the end of file or
+			//we hit last index
+			while(!end) {
+				
+				StringBuilder segment = new StringBuilder();
+				int startIndex = curIndex;
+				
+				for(int i  = 0; i < winSize;) {
+					int res = reader.read();
+					if(res > 40) {
+						segment.append((char)res);
+						i++;
+						curIndex++;
+					}
+					if(res == -1 || (curIndex >= lIndex + 1 && lIndex > 0)) {
+						end = true;
+						break;
+					}
 				}
-				if(b == -1) {
-					break;
+				
+				Result res = DNAUtil.findGcContentForSegment(segment.toString());
+				if(!res.max.isNaN() && !res.min.isNaN()) {
+					resMap.put(startIndex, res);
 				}
-			}
+
+			}			
 			
-			String segment = new String(temp);
-			
-			Result res = DNAUtil.findGcContentForSegment(segment);
-			
-			resMap.put(sIndex, res);
-			
-			stream.close();
-			scan.close();
+			reader.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			return;
 		}
+		
 		return;
 	}
 
