@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -54,20 +55,20 @@ public class DNAApplication extends JFrame {
 
 	protected void build() {
 
-		JPanel topPanel = new JPanel(new BorderLayout());
+		Box topBox = Box.createVerticalBox();
 		JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		inputPanel.add(new JLabel("Select an Input File: "));
 		inputPanel.add(fileNameField);
 		inputPanel.add(browseButton);
 		
-		topPanel.add(inputPanel, BorderLayout.NORTH);
+		topBox.add(inputPanel);
 		
-		JPanel resultsPanel = new JPanel(new BorderLayout());
-		resultsPanel.add(new JLabel("Results: "), BorderLayout.SOUTH);
+		JPanel resultsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		resultsPanel.add(new JLabel("Results: "));
 		
-		topPanel.add(resultsPanel);
+		topBox.add(resultsPanel);
 		
-		contentPanel.add(topPanel);
+		contentPanel.add(topBox);
 
 		// JPanel resultsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
