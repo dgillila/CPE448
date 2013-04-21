@@ -288,7 +288,7 @@ public class InputDialog extends JDialog {
             	
             	
             	try {
-            		mDisplayArea.setText(DNAUtil.singleAnalyze(mFile.getText(), startPos, endPos, windowShift, windowSize));
+            		mDisplayArea.setText(DNAUtil.analyze(mFile.getText(), startPos, endPos, windowShift, windowSize));
             	}
             	catch(Exception ex) {
             		mDisplayArea.setText("Error. Please try again.");
