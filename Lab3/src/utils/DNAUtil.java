@@ -62,6 +62,11 @@ public class DNAUtil {
 				//Set all the normal stuff
 				g.setChromosomeName(tokens[0]);
 				g.setSource(tokens[1]);
+				
+				if(!tokens[2].equals("mRNA") && !tokens[2].equals("CDS")) {
+					continue;
+				}
+				
 				g.setFeature(tokens[2]);
 				g.setStart(Integer.parseInt(tokens[3]));
 				g.setStop(Integer.parseInt(tokens[4]));
