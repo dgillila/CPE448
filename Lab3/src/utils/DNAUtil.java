@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ public class DNAUtil {
 	public Map<String, Double> averageCDSSizes = new HashMap<String, Double>();
 	public Map<String, Double> averageExonSizes = new HashMap<String, Double>();
 	public Map<String, Double> averageIntronSizes = new HashMap<String, Double>();
+	public double avgIntergenicSize = 0;
 	public int totalNucleotides = 0;
 	public int numGenes = 0;
 	
@@ -122,14 +125,22 @@ public class DNAUtil {
 		Map<String, AttributeInfo> isoforms = new HashMap<String, AttributeInfo>();
 		Map<String, AttributeInfo> geneInfos = new HashMap<String, AttributeInfo>();
 		int totalCDS = 0;
+		int totalIntergenicRegionSize = 0;
+		List<Gene> mRNAs = new ArrayList<Gene>();
+		boolean foundRNA = false;
 		
 		for(String name : genes.keySet()) {
 			 gList = genes.get(name);
+			 foundRNA = false;
 			 for(Gene g : gList)
 			 {
 				 //Average CDS Span
 				 if(g.getFeature().equals("mRNA"))
 				 {
+					 if(!foundRNA) {
+						 mRNAs.add(g);
+						 foundRNA = true;
+					 }
 					 mRNACount++;
 					 mRNATotalSize += g.getStop() - g.getStart();
 				 }
@@ -162,6 +173,37 @@ public class DNAUtil {
 				 //Finding highest Nucleotide number
 				 this.totalNucleotides = (g.getStop() > this.totalNucleotides) ? g.getStop() : this.totalNucleotides;
 			 }
+		}
+		
+		//Average intergenic region size
+		Collections.sort(mRNAs, new Comparator<Gene>() {
+			@Override
+			public int compare(Gene o1, Gene o2) {
+				if(o1.getStart() < o2.getStart()) {
+					return -1;
+				} else if (o1.getStart() > o2.getStart()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		});
+		
+		int lastStop = -1;
+		
+		for(Gene rna : mRNAs) {
+			if(lastStop < 0) {
+				lastStop = rna.getStop();
+			} else {
+				totalIntergenicRegionSize += rna.getStart() - lastStop;
+				lastStop = rna.getStop();
+			}
+		}
+		
+		if(mRNAs.size() == 1) {
+			this.avgIntergenicSize = 0;
+		} else {
+			this.avgIntergenicSize = totalIntergenicRegionSize / (mRNAs.size() - 1);
 		}
 		
 		//Average CDS Span
