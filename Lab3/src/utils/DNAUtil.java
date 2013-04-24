@@ -89,6 +89,14 @@ public class DNAUtil {
 					}
 				}
 				
+				//Update start or stop based on + and - values
+				if(g.isForwardStrand()) {
+					g.setStop(g.getStop() + 3);
+				} else {
+					g.setStart(g.getStart() - 3);
+				}
+				
+				
 				//The gene is finished reading save it to the gene map
 				if(genes.get(g.getName()) == null) {
 					List<Gene> temp = new ArrayList<Gene>();
