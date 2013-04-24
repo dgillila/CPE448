@@ -14,13 +14,13 @@ import model.Gene;
 
 public class DNAUtil {
 	
-	public double avgCDSSpan = 0;
-	public double avgCDSSize = 0;
-	public double avgExonSize = 0;
-	public double avgIntronSize = 0;
-	public double avgIntergenicSize = 0;
-	public int totalNucleotides = 0;
-	public int numGenes = 0;
+	public static double avgCDSSpan = 0;
+	public static double avgCDSSize = 0;
+	public static double avgExonSize = 0;
+	public static double avgIntronSize = 0;
+	public static double avgIntergenicSize = 0;
+	public static int totalNucleotides = 0;
+	public static int numGenes = 0;
 	
 	//Static methods again works for me
 
@@ -30,6 +30,8 @@ public class DNAUtil {
 		Map<String, List<Gene>> genes = new HashMap<String, List<Gene>>();
 		
 		readFile(filepath, genes);
+		
+		calculateGeneContentAndDensity(genes);
 		
 		return displayInfo(genes);
 	}
@@ -81,12 +83,14 @@ public class DNAUtil {
 				
 				//Save all attributes
 				for(String s : attributes) {
+					s = s.trim();
 					String[] pair = s.split(" ");
 					String key = pair[0];
 					String val = pair[1];
 					
 					if(key.equals("gene_id")){
 						g.setName(val.replace("\"", ""));
+						g.addAttribute(key, val.replace("\"", ""));
 					} else {
 						g.addAttribute(key, val.replace("\"", ""));
 					}
@@ -117,7 +121,7 @@ public class DNAUtil {
 	}
 	
 	
-	private void calculateGeneContentAndDensity(Map<String, List<Gene>> genes)
+	private static void calculateGeneContentAndDensity(Map<String, List<Gene>> genes)
 	{
 		List<Gene> gList;
 		int mRNATotalSize = 0;
@@ -215,14 +219,13 @@ public class DNAUtil {
 		}
 		
 		if(mRNAs.size() == 1) {
-			this.avgIntergenicSize = 0;
+			avgIntergenicSize = 0;
 		} else {
-			this.avgIntergenicSize = totalIntergenicRegionSize / (mRNAs.size() - 1);
+			avgIntergenicSize = totalIntergenicRegionSize / (mRNAs.size() - 1);
 		}
 		
 		//Average CDS Span
-		this.avgCDSSpan = (double)mRNATotalSize/mRNACount;
-		
+		avgCDSSpan = (double)mRNATotalSize/mRNACount;		
 		
 		//Find average CDS size per isoform
 		for(String name : isoforms.keySet())
@@ -234,11 +237,11 @@ public class DNAUtil {
 		//Find average of all isoform CDS size averages
 		for(String name : averageCDSSizes.keySet())
 		{
-			this.avgCDSSize += averageCDSSizes.get(name);
+			avgCDSSize += averageCDSSizes.get(name);
 		}
 		
 		//Average CDS size for all isoforms
-		this.avgCDSSize /= isoforms.keySet().size();
+		avgCDSSize /= isoforms.keySet().size();
 		
 		//Average Exon Size for each gene
 		for(String name : geneInfos.keySet())
@@ -250,20 +253,20 @@ public class DNAUtil {
 		//Find average of all Gene Exon size averages
 		for(String name : averageExonSizes.keySet())
 		{
-			this.avgExonSize += averageExonSizes.get(name);
+			avgExonSize += averageExonSizes.get(name);
 		}
 		
 		//Average Exon Size for all genes
-		this.avgExonSize /= geneInfos.keySet().size();
+		avgExonSize /= geneInfos.keySet().size();
 		
 		//Average Intron Size
-		this.avgIntronSize = (this.avgCDSSize - this.avgCDSSpan)/(totalCDS - 1);
+		avgIntronSize = (avgCDSSize - avgCDSSpan)/(totalCDS - 1);
 		
 		//Number of genes
-		this.numGenes = geneInfos.keySet().size();
+		numGenes = geneInfos.keySet().size();
 		
 		//Finding highest Nucleotide number
-		 this.totalNucleotides = maxEndPos - smallestStartPos;
+		 totalNucleotides = maxEndPos - smallestStartPos;
 	}
 	
 }
