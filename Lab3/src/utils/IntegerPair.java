@@ -6,8 +6,9 @@ public class IntegerPair {
 		
 	}
 	
-	public IntegerPair(int start, int stop) {
-		
+	public IntegerPair(int startVal, int stopVal) {
+		this.start = startVal;
+		this.stop = stopVal;
 	}
 	
 	public int start;
