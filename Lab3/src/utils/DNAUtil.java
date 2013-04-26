@@ -3,6 +3,7 @@ package utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +22,7 @@ public class DNAUtil {
 	public static double avgIntergenicSize = 0;
 	public static int totalNucleotides = 0;
 	public static int numGenes = 0;
+	public static int totalCDSActual = 0;
 	
 	//Static methods again works for me
 
@@ -39,9 +41,24 @@ public class DNAUtil {
 	private static String displayInfo(Map<String, List<Gene>> genes) {
 		String rtn = "";
 
-		for(String name : genes.keySet()) {
-			rtn += (name + " " + genes.get(name).size() + "\n");
-		}
+		
+		DecimalFormat df = new DecimalFormat("#.##");
+//		for(String name : genes.keySet()) {
+//			rtn += (name + " " + genes.get(name).size() + "\n");
+//		}
+		rtn += "Gene Content:\n";
+		rtn += "a) " + df.format(avgCDSSpan) + "\tAverage CDS Span \n";
+		rtn += "b) " + df.format(avgCDSSize) + "\tAverage CDS Size \n";
+		rtn += "c) " + df.format(avgExonSize) + "\tAverage Exon Size \n";
+		rtn += "d) " + df.format(avgIntronSize) + "\tAverage Intron Size \n";
+		rtn += "e) " + df.format(avgIntergenicSize) + "\tAverage Intergenic Region Size \n";
+		
+		rtn += "\n2. Gene Density:\n";
+		
+		rtn += "a) " + df.format(numGenes * avgCDSSpan) + "\tNumber of Genes * Average CDS Span\n";
+		rtn += "b) " + df.format(numGenes * avgCDSSize) + "\tNumber of Genes * Average CDS Size\n";
+		rtn += "c) " + df.format((double)numGenes / totalNucleotides) + "\tNumber of Genes per KBPairs\n";
+		rtn += "d) " + df.format(totalNucleotides / numGenes) + "\tKBPairs / Number of Genes \n";
 		
 		return rtn;
 	}
@@ -138,6 +155,7 @@ public class DNAUtil {
 		boolean first = true;
 		int maxEndPos = 0;
 		int smallestStartPos = 0;
+		Map<String, List<IntegerPair>> isoformRegions = new HashMap<String, List<IntegerPair>>();
 		
 		for(String name : genes.keySet()) {
 			 gList = genes.get(name);
@@ -157,6 +175,16 @@ public class DNAUtil {
 				 else if(g.getFeature().equals("CDS"))
 				 {
 					 totalCDS++;
+					 //for max CDS size length
+					 if(isoformRegions.containsKey(g.getName())) {
+						 isoformRegions.get(g.getName()).add(new IntegerPair(g.getStart(), g.getStop()));
+					 } else {
+						 List<IntegerPair> temp = new ArrayList<IntegerPair>();
+						 temp.add(new IntegerPair(g.getStart(), g.getStop()));
+						 isoformRegions.put(g.getName(), temp);
+					 }
+					 
+					 
 					//Average CDS size for all isoforms
 					 String transcriptID = g.getAttributes().get("transcript_id");
 					 if(isoforms.containsKey(transcriptID))
@@ -191,6 +219,35 @@ public class DNAUtil {
 					 smallestStartPos = (g.getStart() < smallestStartPos) ? g.getStart() : smallestStartPos; 
 				 }
 			 }
+		}
+		
+		
+		totalCDSActual = 0;
+		//actual total cds size
+		for(List<IntegerPair> list : isoformRegions.values()) {
+			Collections.sort(list, new Comparator<IntegerPair>() {
+				@Override
+				public int compare(IntegerPair o1, IntegerPair o2) {
+					if(o1.start < o2.stop) {
+						return -1;
+					} else if (o1.start > o2.stop) {
+						return 1;
+					} else {
+						return 0;
+					}
+				}
+			});
+			
+			for(int i = 0; i < list.size();i++) {
+				IntegerPair one = list.get(i);
+				i++;
+				IntegerPair two = list.get(i);
+				
+				int min = Math.min(one.start, two.start);
+				int max = Math.max(one.stop, two.stop);
+				
+				totalCDSActual += max-min;
+			}
 		}
 		
 		//Average intergenic region size
