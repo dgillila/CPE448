@@ -326,7 +326,7 @@ public class DNAUtil {
 		avgExonSize /= geneInfos.keySet().size();
 		
 		//Average Intron Size
-		avgIntronSize = (avgCDSSize - avgCDSSpan)/(totalCDS - 1);
+		avgIntronSize = (avgCDSSpan - avgCDSSize)/(totalCDS - 1);
 		
 		//Number of genes
 		numGenes = geneInfos.keySet().size();
