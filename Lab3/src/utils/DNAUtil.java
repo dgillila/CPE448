@@ -28,6 +28,15 @@ public class DNAUtil {
 
 	public static String calculateResults(String filepath) throws Exception {
 		
+		avgCDSSize = 0;
+		avgCDSSpan = 0;
+		avgExonSize = 0;
+		avgIntronSize = 0;
+		avgIntergenicSize = 0;
+		totalNucleotides = 0;
+		numGenes = 0;
+		totalCDSActual = 0;
+		
 		//Name of the gene to all of the attributes of it
 		Map<String, List<Gene>> genes = new HashMap<String, List<Gene>>();
 		
@@ -57,8 +66,9 @@ public class DNAUtil {
 		
 		rtn += "a) " + df.format(numGenes * avgCDSSpan) + "\tNumber of Genes * Average CDS Span\n";
 		rtn += "b) " + df.format(numGenes * avgCDSSize) + "\tNumber of Genes * Average CDS Size\n";
-		rtn += "c) " + df.format((double)numGenes / totalNucleotides) + "\tNumber of Genes per KBPairs\n";
-		rtn += "d) " + df.format(totalNucleotides / numGenes) + "\tKBPairs / Number of Genes \n";
+		rtn += "c) " + df.format(totalCDSActual) + "\tTotal CDS Size (combining isoforms)\n";
+		rtn += "d) " + df.format((double)numGenes / totalNucleotides) + "\tNumber of Genes per KBPairs\n";
+		rtn += "e) " + df.format(totalNucleotides / numGenes) + "\tKBPairs / Number of Genes \n";
 		
 		return rtn;
 	}
@@ -222,7 +232,6 @@ public class DNAUtil {
 		}
 		
 		
-		totalCDSActual = 0;
 		//actual total cds size
 		for(List<IntegerPair> list : isoformRegions.values()) {
 			Collections.sort(list, new Comparator<IntegerPair>() {
@@ -246,7 +255,7 @@ public class DNAUtil {
 				int min = Math.min(one.start, two.start);
 				int max = Math.max(one.stop, two.stop);
 				
-				totalCDSActual += max-min;
+				totalCDSActual += (max - min);
 			}
 		}
 		
