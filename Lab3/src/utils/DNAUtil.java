@@ -66,7 +66,7 @@ public class DNAUtil {
 		
 		rtn += "a) " + df.format(numGenes * avgCDSSpan) + "\tNumber of Genes * Average CDS Span\n";
 		rtn += "b) " + df.format(numGenes * avgCDSSize) + "\tNumber of Genes * Average CDS Size\n";
-		rtn += "c) " + df.format(totalCDSActual) + "\tTotal CDS Size (combining isoforms)\n";
+		rtn += "c) " + df.format((double)totalCDSActual/totalNucleotides) + "\tTotal CDS Size (combining isoforms)\n";
 		rtn += "d) " + df.format((double)numGenes / (totalNucleotides/1000.0)) + "\tNumber of Genes per KBPairs\n";
 		rtn += "e) " + df.format((totalNucleotides / 1000.0) / numGenes) + "\tKBPairs / Number of Genes \n";
 		
