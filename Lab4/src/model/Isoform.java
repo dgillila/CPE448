@@ -1,5 +1,6 @@
 package model;
 
-public class Isoform {
-
+public class Isoform extends Gene {
+	
+	
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +67,7 @@ public class DNAUtil {
 		
 		rtn += "a) " + df.format(numGenes * avgCDSSpan) + "\tNumber of Genes * Average CDS Span\n";
 		rtn += "b) " + df.format(numGenes * avgCDSSize) + "\tNumber of Genes * Average CDS Size\n";
-		rtn += "c) " + df.format((double)totalCDSActual/totalNucleotides) + "\tTotal CDS Size (combining isoforms)\n";
+		rtn += "c) " + df.format((double)totalCDSActual/totalNucleotides) + "\tTotal CDS Size (combining isoforms) / number of nucleotides\n";
 		rtn += "d) " + df.format((double)numGenes / (totalNucleotides/1000.0)) + "\tNumber of Genes per KBPairs\n";
 		rtn += "e) " + df.format((totalNucleotides / 1000.0) / numGenes) + "\tKBPairs / Number of Genes \n";
 		
@@ -165,8 +166,7 @@ public class DNAUtil {
 		boolean first = true;
 		int maxEndPos = 0;
 		int smallestStartPos = 0;
-//		Map<String, List<Isoform>> cdsIsoforms = new HashMap<String, List<Isoform>>();
-		Map<String, Map<String, List<IntegerPair>>> cdsIsoforms = new HashMap<String, Map<String, List<IntegerPair>>>();
+		List<IntegerPair> cdsRegions = new ArrayList<IntegerPair>();
 		
 		for(String name : genes.keySet()) {
 			 gList = genes.get(name);
@@ -186,6 +186,7 @@ public class DNAUtil {
 				 else if(g.getFeature().equals("CDS"))
 				 {
 					 totalCDS++;
+					 cdsRegions.add(new IntegerPair(g.getStart(), g.getStop()));
 					 
 					//Average CDS size for all isoforms
 					 String transcriptID = g.getAttributes().get("transcript_id");
@@ -196,22 +197,6 @@ public class DNAUtil {
 					 else
 					 {
 						 isoforms.put(transcriptID, new AttributeInfo(transcriptID, g.getStop() - g.getStart()));
-					 }
-					 
-					 if(cdsIsoforms.containsKey(g.getName())) {
-						 if(cdsIsoforms.get(g.getName()).containsKey(transcriptID)) {
-							 cdsIsoforms.get(g.getName()).get(transcriptID).add(new IntegerPair(g.getStart(), g.getStop()));
-						 } else {
-							 List<IntegerPair> cdsRegions = new ArrayList<IntegerPair>();
-							 cdsRegions.add(new IntegerPair(g.getStart(), g.getStop()));
-							 cdsIsoforms.get(g.getName()).put(transcriptID, cdsRegions);
-						 }
-					 } else {
-						 Map<String, List<IntegerPair>> temp = new HashMap<String, List<IntegerPair>>();
-						 List<IntegerPair> cdsRegions = new ArrayList<IntegerPair>();
-						 cdsRegions.add(new IntegerPair(g.getStart(), g.getStop()));
-						 temp.put(transcriptID, cdsRegions);
-						 cdsIsoforms.put(g.getName(), temp);
 					 }
 					 
 					 //Average Exon Size for each gene that is a CDS
@@ -241,69 +226,36 @@ public class DNAUtil {
 		
 		
 		//actual total cds size
-		for(Map<String, List<IntegerPair>> isoform : cdsIsoforms.values()) {
-			
-			int numRegions = 0;
-			
-			for(List<IntegerPair> pairList : isoform.values()) {
-				numRegions = pairList.size();
-				Collections.sort(pairList, new Comparator<IntegerPair>() {
-					@Override
-					public int compare(IntegerPair o1, IntegerPair o2) {
-						if(o1.start < o2.stop) {
-							return -1;
-						} else if (o1.start > o2.stop) {
-							return 1;
-						} else {
-							return 0;
-						}
-					}
-				});
-			}
-			
-			for(int i = 0; i < numRegions; i++) {
-				
-				int min = -1;
-				int max = -1;
-				
-				for(List<IntegerPair> pairList : isoform.values()) {
-					if(min == -1 || min > pairList.get(i).start) {
-						min = pairList.get(i).start;
-					}
-					if(max == -1 || max < pairList.get(i).stop) {
-						max = pairList.get(i).stop;
-					}
+		Collections.sort(cdsRegions, new Comparator<IntegerPair>() {
+			@Override
+			public int compare(IntegerPair o1, IntegerPair o2) {
+				if(o1.start < o2.stop) {
+					return -1;
+				} else if (o1.start > o2.stop) {
+					return 1;
+				} else {
+					return 0;
 				}
-				
-				totalCDSActual += (max - min);
 			}
-						
+		});
+		
+		//find and combine overlapping regions
+		IntegerPair curVal = cdsRegions.size() > 0 ? cdsRegions.get(0) : null;
+		Iterator<IntegerPair> iter = cdsRegions.iterator();
+		while(iter.hasNext()) {
+			while(iter.hasNext()) {
+				IntegerPair temp = iter.next();
+				if(temp.start >= curVal.start && temp.start <= curVal.stop) {
+					if(temp.stop > curVal.stop) {
+						curVal.stop = temp.stop;
+					}
+				} else {
+					totalCDSActual += (curVal.stop - curVal.start);
+					curVal = temp;
+					break;
+				}
+			}
 		}
-//		for(List<IntegerPair> list : isoformRegions.values()) {
-//			Collections.sort(list, new Comparator<IntegerPair>() {
-//				@Override
-//				public int compare(IntegerPair o1, IntegerPair o2) {
-//					if(o1.start < o2.stop) {
-//						return -1;
-//					} else if (o1.start > o2.stop) {
-//						return 1;
-//					} else {
-//						return 0;
-//					}
-//				}
-//			});
-			
-//			for(int i = 0; i < list.size();i++) {
-//				IntegerPair one = list.get(i);
-//				i++;
-//				IntegerPair two = list.get(i);
-				
-//				int min = Math.min(one.start, two.start);
-//				int max = Math.max(one.stop, two.stop);
-				
-//				totalCDSActual += (max - min);
-//			}
-//		}
 		
 		//Average intergenic region size
 		Collections.sort(mRNAs, new Comparator<Gene>() {
