@@ -246,8 +246,8 @@ public class DNAUtil {
 
 		// find and combine overlapping regions
 		IntegerPair curVal = cdsRegions.size() > 0 ? cdsRegions.get(0) : null;
-		int cdsMin = curVal.start;
-		int cdsMax = curVal.stop;
+		int cdsMin = curVal != null ? curVal.start : 0;
+		int cdsMax = curVal != null ? curVal.stop : 0;
 		
 		Iterator<IntegerPair> iter = cdsRegions.iterator();
 		while (iter.hasNext()) {
