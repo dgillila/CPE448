@@ -1,115 +1,54 @@
 package model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Gene {
 
-	protected List<Isoform> isoforms;
 	protected String name;
-	protected String chromosomeName;
-	protected String source;
-	protected String feature;
-	protected int start;
-	protected int stop;
-	protected double score;
-	protected boolean forwardStrand;
-	protected int frame;
-	protected Map<String, String> attributes;
+	protected List<Isoform> isoforms;
 	
-	// POJO constructor
 	public Gene() {
-
+		isoforms = new ArrayList<Isoform>();
 	}
 	
-	
-	//GETTERS AND SETTERS
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getChromosomeName() {
-		return chromosomeName;
-	}
-
-	public void setChromosomeName(String chromosomeName) {
-		this.chromosomeName = chromosomeName;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	public String getFeature() {
-		return feature;
-	}
-
-	public void setFeature(String feature) {
-		this.feature = feature;
-	}
-
-	public int getStart() {
-		return start;
-	}
-
-	public void setStart(int start) {
-		this.start = start;
-	}
-
-	public int getStop() {
-		return stop;
-	}
-
-	public void setStop(int stop) {
-		this.stop = stop;
-	}
-
-	public double getScore() {
-		return score;
-	}
-
-	public void setScore(double score) {
-		this.score = score;
-	}
-
-	public boolean isForwardStrand() {
-		return forwardStrand;
-	}
-
-	public void setForwardStrand(boolean forwardStrand) {
-		this.forwardStrand = forwardStrand;
-	}
-
-	public int getFrame() {
-		return frame;
-	}
-
-	public void setFrame(int frame) {
-		this.frame = frame;
-	}
-
-	public Map<String, String> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(Map<String, String> attributes) {
-		this.attributes = attributes;
+		return this.name;
 	}
 	
-	public void addAttribute(String key, String value) {
-		if(attributes == null) {
-			attributes = new HashMap<String, String>();
+	public void setName(String value) {
+		this.name = value;
+	}
+	
+	public void addIsoform(Isoform i) {
+		isoforms.add(i);
+	}
+	
+	public List<Isoform> getIsoforms() {
+		return isoforms;
+	}
+	
+	public Isoform findIsoform(String isoformName) {
+		for(Isoform i : isoforms) {
+			if(i.getName().equals(isoformName)) {
+				return i;
+			}
 		}
-		attributes.put(key, value);
+		
+		return null;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Gene) {
+			Gene other = (Gene)o;
+			if(other.getName().equals(this.name)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 }
