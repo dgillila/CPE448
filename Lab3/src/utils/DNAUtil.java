@@ -67,17 +67,17 @@ public class DNAUtil {
 
 		rtn += "\n2. Gene Density:\n";
 
-		rtn += "a) " + df.format(numGenes * avgCDSSpan)
-				+ "\tNumber of Genes * Average CDS Span\n";
-		rtn += "b) " + df.format(numGenes * avgCDSSize)
-				+ "\tNumber of Genes * Average CDS Size\n";
+		rtn += "a) " + df.format(numGenes * (avgCDSSpan/totalT))
+				+ "\tNumber of Genes * (Average CDS Span / total nucleotides)\n";
+		rtn += "b) " + df.format(numGenes * (avgCDSSize/totalT))
+				+ "\tNumber of Genes * (Average CDS Size / total nucleotides)\n";
 		rtn += "c) "
 				+ df.format((double) totalCDSActual / totalT)
-				+ "\tTotal CDS Size (combining isoforms) / number of nucleotides\n";
+				+ "\tTotal CDS Size (combining isoforms) / total nucleotides\n";
 		rtn += "d) "
-				+ df.format((double) numGenes / (totalNucleotides / 1000.0))
+				+ df.format((double) numGenes / (totalT / 1000.0))
 				+ "\tNumber of Genes per KBPairs\n";
-		rtn += "e) " + df.format((totalNucleotides / 1000.0) / numGenes)
+		rtn += "e) " + df.format((totalT / 1000.0) / numGenes)
 				+ "\tKBPairs / Number of Genes \n";
 
 		return rtn;
@@ -305,10 +305,10 @@ public class DNAUtil {
 		// Average CDS Span
 		avgCDSSpan = (double) mRNATotalSize / mRNACount;
 
-		// Find average CDS size per isoform
+		// Find total CDS size per isoform
 		for (String name : isoforms.keySet()) {
 			AttributeInfo iso = isoforms.get(name);
-			averageCDSSizes.put(iso.id, (double) iso.totalSize / iso.count);
+			averageCDSSizes.put(iso.id, (double) iso.totalSize);
 		}
 
 		// Find average of all isoform CDS size averages
@@ -319,11 +319,10 @@ public class DNAUtil {
 		// Average CDS size for all isoforms
 		avgCDSSize /= isoforms.keySet().size();
 
-		// Average Exon Size for each gene
+		// Total Exon Size for each gene
 		for (String name : geneInfos.keySet()) {
 			AttributeInfo geneInfo = geneInfos.get(name);
-			averageExonSizes.put(geneInfo.id, (double) geneInfo.totalSize
-					/ geneInfo.count);
+			averageExonSizes.put(geneInfo.id, (double) geneInfo.totalSize);
 		}
 
 		// Find average of all Gene Exon size averages
@@ -332,7 +331,7 @@ public class DNAUtil {
 		}
 
 		// Average Exon Size for all genes
-		avgExonSize /= geneInfos.keySet().size();
+		avgExonSize /= totalCDS;
 
 		// Average Intron Size
 		avgIntronSize = (avgCDSSpan - avgCDSSize) / (totalCDS - 1);
@@ -341,7 +340,7 @@ public class DNAUtil {
 		numGenes = geneInfos.keySet().size();
 
 		// Finding highest Nucleotide number
-		totalNucleotides = maxEndPos - smallestStartPos;
+		totalNucleotides = maxEndPos - smallestStartPos + 1;
 	}
 
 }
