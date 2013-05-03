@@ -70,9 +70,12 @@ public class DNAFileReader {
 						g.setStart(g.getStart() - 3);
 					}
 
+					Gene temp = new Gene();
+					temp.setName(geneName);
+					
 					// Add the completed gene to the list of Genes to return
-					if (rtn.contains(geneName)) {
-						rtn.get(rtn.indexOf(geneName)).addIsoform(g);
+					if (rtn.contains(temp)) {
+						rtn.get(rtn.indexOf(temp)).addIsoform(g);
 					} else {
 						Gene newGene = new Gene();
 						newGene.setName(geneName);
@@ -115,8 +118,11 @@ public class DNAFileReader {
 						}
 					}
 					
-					if(rtn.contains(geneName)) {
-						Isoform i = rtn.get(rtn.indexOf(geneName)).findIsoform(c.getName());
+					Gene temp = new Gene();
+					temp.setName(geneName);
+					
+					if(rtn.contains(temp)) {
+						Isoform i = rtn.get(rtn.indexOf(temp)).findIsoform(c.getName());
 						if(i != null) {
 							i.addCDS(c);
 						} else {
@@ -137,12 +143,29 @@ public class DNAFileReader {
 
 		reader.close();
 
-		return null;
+		return rtn;
 	}
 
 	public static String readFASTA(String filepath) throws Exception {
-
-		return null;
+		File f = new File(filepath);
+		FileReader in = new FileReader(f);
+		BufferedReader reader = new BufferedReader(in);
+		
+		String rtn = "";
+		
+		//Skip the first line
+		reader.readLine();
+		
+		String line = reader.readLine();
+		while(line != null) {
+			rtn = rtn.concat(line);
+			
+			line = reader.readLine();
+		}
+		
+		reader.close();
+		
+		return rtn;
 	}
 
 }
