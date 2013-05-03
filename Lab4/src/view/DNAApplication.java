@@ -193,13 +193,6 @@ public class DNAApplication extends JFrame {
 			String gffFilepath = gffFileNameField.getText();
 			String fastaFilepath = fastaFileNameField.getText();
 
-//			if (filepath == null || filepath.length() == 0) {
-//				JOptionPane.showMessageDialog(null, "No file selected",
-//						"Unable to read file", JOptionPane.ERROR_MESSAGE);
-//
-//				return;
-//			}
-
 			try {
 				resultsField.setText(DNAUtil.calculateResults(gffFilepath, fastaFilepath));
 			} catch (Exception ex) {
