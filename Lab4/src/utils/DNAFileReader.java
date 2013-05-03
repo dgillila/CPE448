@@ -150,22 +150,22 @@ public class DNAFileReader {
 		File f = new File(filepath);
 		FileReader in = new FileReader(f);
 		BufferedReader reader = new BufferedReader(in);
-		
-		String rtn = "";
-		
+				
 		//Skip the first line
 		reader.readLine();
 		
+		StringBuilder builder = new StringBuilder();
+		
 		String line = reader.readLine();
 		while(line != null) {
-			rtn = rtn.concat(line);
+			builder.append(line);
 			
 			line = reader.readLine();
 		}
 		
 		reader.close();
 		
-		return rtn;
+		return builder.toString();
 	}
 
 }

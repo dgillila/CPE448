@@ -28,9 +28,9 @@ public class DNAApplication extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	protected JPanel contentPanel;
-	protected JTextField fileNameField;
+	protected JTextField gffFileNameField, fastaFileNameField;
 	protected JTextArea resultsField;
-	protected JButton browseButton, calculateButton, saveButton, quitButton;
+	protected JButton gffBrowseButton, fastaBrowseButton, calculateButton, saveButton, quitButton;
 
 	public DNAApplication() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,10 +42,12 @@ public class DNAApplication extends JFrame {
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		fileNameField = new JTextField(20);
+		gffFileNameField = new JTextField(20);
+		fastaFileNameField = new JTextField(20);
 		resultsField = new JTextArea();
 		resultsField.setEditable(false);
-		browseButton = new JButton("Browse");
+		gffBrowseButton = new JButton("Browse...");
+		fastaBrowseButton = new JButton("Browse...");
 		calculateButton = new JButton("Calculate");
 		saveButton = new JButton("Save");
 		quitButton = new JButton("Quit");
@@ -57,11 +59,17 @@ public class DNAApplication extends JFrame {
 
 		Box topBox = Box.createVerticalBox();
 		JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		inputPanel.add(new JLabel("Select an Input File: "));
-		inputPanel.add(fileNameField);
-		inputPanel.add(browseButton);
+		inputPanel.add(new JLabel("Select a GFF File: "));
+		inputPanel.add(gffFileNameField);
+		inputPanel.add(gffBrowseButton);
+		
+		JPanel inputPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		inputPanel2.add(new JLabel("Select a FASTA File: "));
+		inputPanel2.add(fastaFileNameField);
+		inputPanel2.add(fastaBrowseButton);
 		
 		topBox.add(inputPanel);
+		topBox.add(inputPanel2);
 		
 		JPanel resultsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		resultsPanel.add(new JLabel("Results: "));
@@ -95,7 +103,8 @@ public class DNAApplication extends JFrame {
 	}
 
 	protected void addActionListeners() {
-		browseButton.addActionListener(browseListener);
+		gffBrowseButton.addActionListener(browseListener);
+		fastaBrowseButton.addActionListener(browseListener);
 		quitButton.addActionListener(quitListener);
 		saveButton.addActionListener(saveListener);
 		calculateButton.addActionListener(calcListener);
@@ -120,7 +129,13 @@ public class DNAApplication extends JFrame {
 
 			else if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = chooser.getSelectedFile();
-				fileNameField.setText(selectedFile.getAbsolutePath());
+				if(e.getSource() == gffBrowseButton) {
+					gffFileNameField.setText(selectedFile.getAbsolutePath());
+				} else if (e.getSource() == fastaBrowseButton) {
+					fastaFileNameField.setText(selectedFile.getAbsolutePath());
+				} else {
+					System.out.println("Oops");
+				}
 			}
 
 			else {
@@ -175,17 +190,18 @@ public class DNAApplication extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			String filepath = fileNameField.getText();
+			String gffFilepath = gffFileNameField.getText();
+			String fastaFilepath = fastaFileNameField.getText();
 
-			if (filepath == null || filepath.length() == 0) {
-				JOptionPane.showMessageDialog(null, "No file selected",
-						"Unable to read file", JOptionPane.ERROR_MESSAGE);
-
-				return;
-			}
+//			if (filepath == null || filepath.length() == 0) {
+//				JOptionPane.showMessageDialog(null, "No file selected",
+//						"Unable to read file", JOptionPane.ERROR_MESSAGE);
+//
+//				return;
+//			}
 
 			try {
-				resultsField.setText(DNAUtil.calculateResults(filepath));
+				resultsField.setText(DNAUtil.calculateResults(gffFilepath, fastaFilepath));
 			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(null, ex.toString(),
 						"Error while reading file", JOptionPane.ERROR_MESSAGE);
