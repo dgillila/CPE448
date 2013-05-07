@@ -113,6 +113,10 @@ public class DNAApplication extends JFrame {
 	protected void quit() {
 		this.dispose();
 	}
+	
+	protected JFrame getThis() {
+		return this;
+	}
 
 	ActionListener browseListener = new ActionListener() {
 		@Override
@@ -193,12 +197,29 @@ public class DNAApplication extends JFrame {
 			String gffFilepath = gffFileNameField.getText();
 			String fastaFilepath = fastaFileNameField.getText();
 
-			try {
-				resultsField.setText(DNAUtil.calculateResults(gffFilepath, fastaFilepath));
-			} catch (Exception ex) {
-				JOptionPane.showMessageDialog(null, ex.toString(),
-						"Error while reading file", JOptionPane.ERROR_MESSAGE);
+			ActionThread thread = new ActionThread();
+			thread.setFastaFilepath(fastaFilepath);
+			thread.setGffFilepath(gffFilepath);
+			thread.setResultArea(resultsField);
+			
+			LoadingDialog ld = new LoadingDialog();
+			ld.showLoadingWindow(getThis());
+			
+			thread.setLd(ld);
+			
+			try{
+				thread.execute();
+			}catch(Exception ex) {
+				System.out.println("thread exception");
 			}
+			
+			
+//			try {
+//				resultsField.setText(DNAUtil.calculateResults(gffFilepath, fastaFilepath));
+//			} catch (Exception ex) {
+//				JOptionPane.showMessageDialog(null, ex.toString(),
+//						"Error while reading file", JOptionPane.ERROR_MESSAGE);
+//			}
 		}
 	};
 
