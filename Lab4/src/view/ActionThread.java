@@ -1,5 +1,6 @@
 package view;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
@@ -21,7 +22,7 @@ public class ActionThread extends SwingWorker<String, Object> {
 		try {
 			resultArea.setText(get());
 		} catch(Exception e) {
-			System.out.println("Exception");
+			JOptionPane.showMessageDialog(null, e.toString(), "Error while performing calculations", JOptionPane.ERROR_MESSAGE);		
 		} finally {
 			ld.hideLoadingWindow();
 		}

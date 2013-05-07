@@ -1,7 +1,5 @@
 package view;
 
-import java.awt.Dialog.ModalityType;
-
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;

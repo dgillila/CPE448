@@ -21,8 +21,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import utils.DNAUtil;
-
 public class DNAApplication extends JFrame {
 
 	private static final long serialVersionUID = 1L;
