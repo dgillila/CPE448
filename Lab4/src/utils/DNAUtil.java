@@ -23,7 +23,7 @@ public class DNAUtil {
 			
 			System.out.println("Time: " + (stop - start));
 		}
-				
+						
 		return "TEST";
 	}
 	
