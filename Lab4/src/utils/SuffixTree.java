@@ -1,4 +1,4 @@
-package Model;
+package utils;
 
 import java.lang.String;
 
@@ -20,8 +20,8 @@ public class SuffixTree {
 	private class Node {
 		public Node(SuffixTree tree) {
 			_tree = tree;
-			_edges = new ArrayList<Edge>();
-			_id; // TODO - generate unique node ID
+//			_edges = new ArrayList<Edge>();
+//			_id; // TODO - generate unique node ID
 		}
 
 		private SuffixTree _tree;
@@ -34,7 +34,7 @@ public class SuffixTree {
 			_tree = tree;
 			_head = head;
 			_start_index = 0; // _start_index = tree's current suffix index
-			_id; // TODO - generate unique edge number
+//			_id; // TODO - generate unique edge number
 		}
 
 		private SuffixTree _tree;
