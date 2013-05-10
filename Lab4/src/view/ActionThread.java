@@ -4,6 +4,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
+import model.Options;
+
 import utils.DNAUtil;
 
 public class ActionThread extends SwingWorker<String, Object> {
@@ -12,9 +14,11 @@ public class ActionThread extends SwingWorker<String, Object> {
 	private JTextArea resultArea;
 	private LoadingDialog ld;
 	
+	private Options options;
+
 	@Override
 	protected String doInBackground() throws Exception {
-		return DNAUtil.calculateResults(gffFilepath, fastaFilepath);
+		return DNAUtil.calculateResults(options);
 	}
 	
 	@Override
@@ -58,6 +62,14 @@ public class ActionThread extends SwingWorker<String, Object> {
 
 	public void setLd(LoadingDialog ld) {
 		this.ld = ld;
+	}
+	
+	public Options getOptions() {
+		return options;
+	}
+
+	public void setOptions(Options options) {
+		this.options = options;
 	}
 
 }
