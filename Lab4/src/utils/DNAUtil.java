@@ -31,6 +31,8 @@ public class DNAUtil {
 		String results = "temp";
 		
 		//ALL OPTION TYPES
+		//Options will be sanitized by this point
+		//So perform all calculations on the specified values
 		if(o.byUpstream) { //Search in front of each mRNA taking into account + and - (+ search in front / - search after upstream size)
 			int sizeRange = o.upstreamSize;
 			if(o.bySize) { //Search for repeats of specified size
