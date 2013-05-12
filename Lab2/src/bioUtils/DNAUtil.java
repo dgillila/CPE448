@@ -146,31 +146,51 @@ public class DNAUtil {
 	public static String analyze(String dnaFile, int startIndex, int stopIndex,
 			int winShift, int winSize) throws Exception {
 
-		final ExecutorService service;
+		//final ExecutorService service;
 
 		Map<Integer, Result> results = new ConcurrentHashMap<Integer, Result>();
-		File file = new File(dnaFile);
+		//File file = new File(dnaFile);
 
 		// Create the thread pool
-		service = Executors.newFixedThreadPool(100);
+		//service = Executors.newFixedThreadPool(100);
+		
+		String dnaSequence = DNAFileReader.readFASTA(dnaFile);
 
 		// Check and initialize all variables
 		int curIndex = startIndex < 0 ? 1 : startIndex;
-		int lastIndex = stopIndex < 0 ? -1 : stopIndex;
+		int lastIndex = stopIndex < 0 ? dnaSequence.length() : stopIndex;
 		int size = winSize < 0 ? 1000 : winSize;
 		int shift = winShift < 0 ? size : winShift;
+		int endPos = 0;
+		
+		while(curIndex <= lastIndex)
+		{
+			
+			endPos = (curIndex + size <= lastIndex) ? (curIndex+size-1) : lastIndex;
+			
+			Result res = DNAUtil.findGcContentForSegment(dnaSequence.substring(curIndex-1, endPos));
+			res.start = curIndex;
+			res.stop = endPos;
+			if(!res.max.isNaN() && !res.min.isNaN()) {
+				results.put(curIndex, res);
+			}
+			curIndex += shift;
+		}
 
+		
 		// Kick off the threads
+		/*
 		for (int i = 0; i < size / shift; i++) {
 			service.execute(new CalcThread(file, curIndex, lastIndex, size,
 					results));
 			curIndex += shift;
 		}
+		*/
 
 		// Wait until all threads terminate (max wait of 1 minute - may need to
 		// make this longer)
-		service.shutdown();
-		service.awaitTermination(1, TimeUnit.MINUTES);
+		//service.shutdown();
+		//service.awaitTermination(1, TimeUnit.MINUTES);
 
 		DecimalFormat df = new DecimalFormat("#.##");
 
@@ -185,7 +205,7 @@ public class DNAUtil {
 					results);
 
 			for (Integer a : sortedRes.keySet()) {
-				rtn += a + " to " + (a + size - 1) + " ,\t"
+				rtn += results.get(a).start + " to " + results.get(a).stop + " ,\t" //a + " to " + (a + size - 1) + " ,\t"
 						+ df.format(results.get(a).min) + " ,\t"
 						+ df.format(results.get(a).max) + "\n";
 			}
@@ -219,6 +239,8 @@ public class DNAUtil {
 				n++;
 			}
 		}
+		
+		System.out.println("Total: " + total);
 
 		Result rtn = new Result();
 		rtn.max = 100 * (double) (gc + n) / total;
