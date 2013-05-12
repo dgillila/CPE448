@@ -3,8 +3,6 @@ package bioGUI;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
-import java.awt.Frame;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
