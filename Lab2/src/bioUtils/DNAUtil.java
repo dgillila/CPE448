@@ -234,8 +234,6 @@ public class DNAUtil {
 			}
 		}
 		
-		System.out.println("Total: " + total);
-
 		Result rtn = new Result();
 		rtn.max = 100 * (double) (gc + n) / total;
 		rtn.min = 100 * (double) gc / total;
