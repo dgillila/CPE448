@@ -5,7 +5,6 @@ import java.util.List;
 
 import model.Gene;
 import model.Options;
-import SuffixTree;
 
 public class DNAUtil {
 
@@ -77,6 +76,7 @@ public class DNAUtil {
 
 				for(int i = 0; i < repeats.size(); i++) {
 				    results += repeats.get(i) + " ";
+				}
 			}
 		}
 		
