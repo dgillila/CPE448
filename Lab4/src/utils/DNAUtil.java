@@ -5,6 +5,7 @@ import java.util.List;
 
 import model.Gene;
 import model.Options;
+import SuffixTree;
 
 public class DNAUtil {
 
@@ -29,7 +30,7 @@ public class DNAUtil {
 			System.out.println("Time: " + (stop - start));
 		}
 		
-		String results = "temp";
+		String results = "";
 		
 		//ALL OPTION TYPES
 		//Options will be sanitized by this point
@@ -66,13 +67,16 @@ public class DNAUtil {
 				//in the specified range that are greater than min size 
 				//and less than maxSize. Range is specified by startPosition and stopPosition
 				
-				
 			} else { //Search for repeats by specific string
 				String searchPattern = o.sequence;
 				
-				//TODO use a suffix tree and find all repeated sequences
+				//use a suffix tree and find all repeated sequences
 				//in the specified range that are the same as the searchPattern string
-				
+				SuffixTree tree = new SuffixTree(dnaSequence, startPosition, stopPosition);
+				ArrayList<String> repeats = SuffixTree.findRepeats(tree, searchPattern);
+
+				for(int i = 0; i < repeats.size(); i++) {
+				    results += repeats.get(i) + " ";
 			}
 		}
 		
