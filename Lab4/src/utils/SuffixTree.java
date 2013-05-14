@@ -163,7 +163,8 @@ public class SuffixTree {
 			}
 			else
 			{
-				node.left = '0';
+				//Empty Character - left character for first character of suffix
+				node.left = '*';
 			}
 		}
 		else
