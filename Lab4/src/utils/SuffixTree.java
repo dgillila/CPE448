@@ -7,16 +7,20 @@ public class SuffixTree {
 
 	public SuffixTreeNode root;
 	public String word;
+	public int startPos;
+	public int endPos;
 	
-	public SuffixTree(String word)
+	public SuffixTree(String word, int start, int end)
 	{
 		this.word = new String(word);
+		this.startPos = start;
+		this.endPos = end;
 		this.constructTree();
 	}
 	
 	public static void main(String[] args)
 	{
-		SuffixTree tree = new SuffixTree("CCATCAT");
+		SuffixTree tree = new SuffixTree("CCATCAT", 1, 7);
 		System.out.println("Done!");
 		printTree(tree.root, 0);
 		System.out.println();
@@ -35,16 +39,16 @@ public class SuffixTree {
 		
 		for(i = 0; i < this.word.length(); i++)
 		{
-			this.addSuffix(this.word.substring(i) + "$", i+1);
+			this.addSuffix(this.startPos+i, this.endPos+1, this.word.substring(i) + "$", i+1);
 		}
-		this.addSuffix("$", i+1);
+		this.addSuffix(this.startPos+i, this.endPos+1, "$", i+1);
 	}
 	
-	public void addSuffix(String suffix, int position)
+	public void addSuffix(int start, int end, String suffix, int position)
 	{
 		StringBuilder tempSuffix = new StringBuilder(suffix);
 		SuffixTreeNode node = findPosition(this.root, tempSuffix);
-		this.insertSuffix(node, new String(tempSuffix), position);
+		this.insertSuffix(start, end, node, new String(tempSuffix), position);
 	}
 	
 	//NOTE: Method modifies suffix parameter
@@ -88,12 +92,12 @@ public class SuffixTree {
 		return i;
 	}
 	
-	public void insertSuffix(SuffixTreeNode node, String suffix, int position)
+	public void insertSuffix(int start, int end, SuffixTreeNode node, String suffix, int position)
 	{
 		if(node.incomingEdge == null || suffix.charAt(0) != node.incomingEdge.label.charAt(0))
 		{
 			//Case 1: Only add leaf node
-			SuffixTreeNode leafNode = new SuffixTreeNode(new SuffixTreeEdge(0, 0, suffix), node);
+			SuffixTreeNode leafNode = new SuffixTreeNode(new SuffixTreeEdge(start, end, suffix), node);
 			leafNode.position = position;
 			node.children.add(leafNode);
 		}
@@ -110,6 +114,8 @@ public class SuffixTree {
 			this.remove(parent.children, node);
 			
 			//Create new internal node and Add internal node to parent's child list
+			//Start and End Positions for internal nodes are just 0 because multiple suffixes with different positions
+			//could be using that internal node as a path so only leaf nodes need start/end positions
 			SuffixTreeNode internalNode = new SuffixTreeNode(new SuffixTreeEdge(0, 0, newLabel), parent);
 			parent.children.add(internalNode);
 			//Add old node (was removed from parent's child list) to internal node's child list
@@ -117,7 +123,7 @@ public class SuffixTree {
 			node.parent = internalNode;
 			internalNode.children.add(node);
 			//Add new leaf node to finish off rest of suffix
-			SuffixTreeNode suffixNode = new SuffixTreeNode(new SuffixTreeEdge(0, 0, suffix.substring(charsMatched)), internalNode);
+			SuffixTreeNode suffixNode = new SuffixTreeNode(new SuffixTreeEdge(start, end, suffix.substring(charsMatched)), internalNode);
 			suffixNode.position = position;
 			internalNode.children.add(suffixNode);
 		}
@@ -162,6 +168,8 @@ public class SuffixTree {
 		}
 		else
 		{
+			//Internal Node
+			i = 0;
 			for(SuffixTreeNode child : node.children)
 			{
 				if(!diversityLabels.contains(child.left))
@@ -177,6 +185,7 @@ public class SuffixTree {
 				}
 				else
 				{
+					//Prune nodes that are not left diverse
 					node.children.remove(i);
 				}
 				i++;
@@ -233,11 +242,11 @@ public class SuffixTree {
 			System.out.print("Depth " + depth + ": " + start.incomingEdge.label);
 			if(start.children.size() == 0)
 			{
-				System.out.println(" (Leaf Node) - " + start.position);
+				System.out.println(" (Leaf Node) - Start: " + start.incomingEdge.labelStartPos + ", End: " + start.incomingEdge.labelEndPos + " - Iteration Position: " + start.position);
 			}
 			else
 			{
-				System.out.println(" (Internal Node)");
+				System.out.println(" (Internal Node) Start: " + start.incomingEdge.labelStartPos + ", End: " + start.incomingEdge.labelEndPos);
 			}
 		}
 		else
