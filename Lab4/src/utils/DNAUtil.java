@@ -65,7 +65,7 @@ public class DNAUtil {
 
 							for(int i = 0; i < repeats.size(); i++) 
 							{
-								results += repeats.get(i) + " ";
+								results += (i+1) + ": " + repeats.get(i).substring(0, repeats.get(i).length()-1) + " \n";
 							}
 						}
 					}
@@ -98,7 +98,7 @@ public class DNAUtil {
 							ArrayList<String> repeats = SuffixTree.findRepeats(tree, searchPattern);
 
 							for(int i = 0; i < repeats.size(); i++) {
-							    results += repeats.get(i) + " ";
+								results += (i+1) + ": " + repeats.get(i).substring(0, repeats.get(i).length()-1) + " \n";
 							}
 						}
 					}
@@ -122,9 +122,10 @@ public class DNAUtil {
 
 				ArrayList<String> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);
 
-				for(int i = 0; i < repeats.size(); i++) {
-                                    results += repeats.get(i) + " ";
-                                }
+				for(int i = 0; i < repeats.size(); i++) 
+				{
+					results += (i+1) + ": " + repeats.get(i).substring(0, repeats.get(i).length()-1) + " \n";
+                }
 				
 			} else { //Search for repeats by specific string
 				String searchPattern = o.sequence;
@@ -136,7 +137,7 @@ public class DNAUtil {
 				ArrayList<String> repeats = SuffixTree.findRepeats(tree, searchPattern);
 
 				for(int i = 0; i < repeats.size(); i++) {
-				    results += repeats.get(i) + " ";
+					results += (i+1) + ": " + repeats.get(i).substring(0, repeats.get(i).length()-1) + " \n";
 				}
 			}
 		}

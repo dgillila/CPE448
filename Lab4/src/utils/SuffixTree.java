@@ -20,12 +20,13 @@ public class SuffixTree {
 	
 	public static void main(String[] args)
 	{
-		SuffixTree tree = new SuffixTree("CCATCAT", 1, 7);
+		String str = new String("TCTGAATTTT");
+		SuffixTree tree = new SuffixTree(str, 1, str.length());
 		System.out.println("Done!");
 		printTree(tree.root, 0);
 		System.out.println();
 		
-		ArrayList<String> repeats = findRepeats(tree, "CAT");
+		ArrayList<String> repeats = findRepeats(tree, "TTT");
 
 		ArrayList<String> allStrings = new ArrayList<String>();
 
@@ -105,8 +106,7 @@ public class SuffixTree {
 	
 	public void insertSuffix(int start, int end, SuffixTreeNode node, String suffix, int position)
 	{
-		System.out.println(suffix);
-		if(node.incomingEdge == null || suffix.charAt(0) != node.incomingEdge.getLabel(word).charAt(0))
+		if(node.incomingEdge == null || suffix.startsWith(node.incomingEdge.getLabel(word)) || suffix.charAt(0) != node.incomingEdge.getLabel(word).charAt(0))
 		{
 			//Case 1: Only add leaf node
 			SuffixTreeNode leafNode = new SuffixTreeNode(new SuffixTreeEdge(start, end), node);
