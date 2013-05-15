@@ -26,6 +26,7 @@ import bioUtils.DNAUtil;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.zip.ZipInputStream;
 
 @SuppressWarnings("serial")
 public class InputDialog extends JDialog {
@@ -284,6 +285,17 @@ public class InputDialog extends JDialog {
             		return;
             	}
             	
+            	if(mFile.getText().endsWith(".zip")) {
+            		//We got a zip
+            		try {
+						DNAUtil.analyzeZip(mFile.getText(), startPos, endPos, windowShift, windowSize);
+						mDisplayArea.setText("Output file created");
+					} catch (Exception e1) {
+						mDisplayArea.setText("Error: " + e1.toString());
+						e1.printStackTrace();
+					}
+            		return;
+            	}
             	
             	try {
             		mDisplayArea.setText(DNAUtil.analyze(mFile.getText(), startPos, endPos, windowShift, windowSize));

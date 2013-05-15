@@ -1,9 +1,24 @@
 package bioUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import jxl.Cell;
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.write.Label;
+import jxl.write.Number;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+
+import net.lingala.zip4j.core.ZipFile;
 
 public class DNAUtil {
 
@@ -136,6 +151,67 @@ public class DNAUtil {
 //
 //		return rtn;
 //	}
+		
+	public static void analyzeZip(String dnaZip, int startIndex, int stopIndex,
+			int winShift, int winSize) throws Exception {
+		
+		ZipFile zip = new ZipFile(dnaZip);
+		zip.extractAll("~temp");
+		
+		File dir = new File("~temp");
+		File newDir = dir.listFiles()[0];
+		
+		File output = new File("results.xls");
+		
+		WorkbookSettings wbSettings = new WorkbookSettings();
+	    wbSettings.setLocale(new Locale("en", "EN"));
+	    WritableWorkbook workbook = Workbook.createWorkbook(output, wbSettings);
+		int i = 0;		
+		double totalMin = 0;
+		double totalMax = 0;
+		
+		for(File filePath : newDir.listFiles()) {
+			String result = analyze(filePath.getAbsolutePath(), startIndex, stopIndex, winShift, winSize);
+			workbook.createSheet(filePath.getName().substring(0, filePath.getName().indexOf(".")), i);
+			WritableSheet sheet = workbook.getSheet(i);
+			i++;
+			
+			String lines[] = result.split("\n");
+			int row = 0;
+			for(String line : lines) {
+				String vals[] = line.split(" ,\t");
+				//For no sliding window
+				int j = 0;
+				for(String val : vals) {
+					Label l = new Label(j, row, val);
+					sheet.addCell(l);
+					j++;
+				}
+				
+				if(result.charAt(0) == 'T' && row == 1) {
+					totalMin += Double.parseDouble(vals[0]);
+					totalMax += Double.parseDouble(vals[1]);
+				}
+				
+				row++;
+			}
+		}
+		
+		totalMin = totalMin / newDir.list().length;
+		totalMax = totalMax / newDir.list().length;
+		
+		workbook.createSheet("Summary", 0);
+		WritableSheet s = workbook.getSheet(0);
+		
+		s.addCell(new Label(0, 0, "TOTAL MIN"));
+		s.addCell(new Label(1, 0, "TOTAL MAX"));
+		s.addCell(new Label(0, 1, ""+totalMin));
+		s.addCell(new Label(1, 1, ""+totalMax));
+		
+		workbook.write();
+		workbook.close();
+		
+	}
 
 	public static String analyze(String dnaFile, int startIndex, int stopIndex,
 			int winShift, int winSize) throws Exception {
