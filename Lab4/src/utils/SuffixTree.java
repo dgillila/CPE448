@@ -6,15 +6,15 @@ import java.util.ArrayList;
 public class SuffixTree {
 
 	public SuffixTreeNode root;
-	public String word;
+	public static String word;
 	public int startPos;
 	public int endPos;
 	
-	public SuffixTree(String word, int start, int end)
+	public SuffixTree(String treeWord, int start, int end)
 	{
-		this.word = new String(word);
+		word = new String(treeWord+"$");
 		this.startPos = start;
-		this.endPos = end;
+		this.endPos = end+1;
 		this.constructTree();
 	}
 	
@@ -24,6 +24,7 @@ public class SuffixTree {
 		System.out.println("Done!");
 		printTree(tree.root, 0);
 		System.out.println();
+		
 		ArrayList<String> repeats = findRepeats(tree, "CAT");
 
 		ArrayList<String> allStrings = new ArrayList<String>();
@@ -39,6 +40,7 @@ public class SuffixTree {
 		{
 			System.out.println(s);
 		}
+		
 	}
 	
 	public void constructTree()
@@ -46,18 +48,18 @@ public class SuffixTree {
 		this.root = new SuffixTreeNode();
 		int i;
 		
-		for(i = 0; i < this.word.length(); i++)
+		for(i = 0; i < word.length(); i++)
 		{
-			this.addSuffix(this.startPos+i, this.endPos+1, this.word.substring(i) + "$", i+1);
+			this.addSuffix(this.startPos+i, this.endPos, word.substring(i), i+1);
 		}
-		this.addSuffix(this.startPos+i, this.endPos+1, "$", i+1);
 	}
 	
 	public void addSuffix(int start, int end, String suffix, int position)
 	{
 		StringBuilder tempSuffix = new StringBuilder(suffix);
 		SuffixTreeNode node = findPosition(this.root, tempSuffix);
-		this.insertSuffix(start, end, node, new String(tempSuffix), position);
+		int charsRemoved = suffix.length() - tempSuffix.length();
+		this.insertSuffix(start+charsRemoved, end, node, new String(tempSuffix), position);
 	}
 	
 	//NOTE: Method modifies suffix parameter
@@ -68,7 +70,7 @@ public class SuffixTree {
 		String label;
 		for(i = 0; i < startNode.children.size(); i++)
 		{
-			label = startNode.children.get(i).incomingEdge.label;
+			label = startNode.children.get(i).incomingEdge.getLabel(word);
 			charsMatched = matchSuffixWithLabel(new String(suffix), label);
 			if(charsMatched == label.length())
 			{
@@ -103,10 +105,11 @@ public class SuffixTree {
 	
 	public void insertSuffix(int start, int end, SuffixTreeNode node, String suffix, int position)
 	{
-		if(node.incomingEdge == null || suffix.charAt(0) != node.incomingEdge.label.charAt(0))
+		System.out.println(suffix);
+		if(node.incomingEdge == null || suffix.charAt(0) != node.incomingEdge.getLabel(word).charAt(0))
 		{
 			//Case 1: Only add leaf node
-			SuffixTreeNode leafNode = new SuffixTreeNode(new SuffixTreeEdge(start, end, suffix), node);
+			SuffixTreeNode leafNode = new SuffixTreeNode(new SuffixTreeEdge(start, end), node);
 			leafNode.position = position;
 			node.children.add(leafNode);
 		}
@@ -115,24 +118,22 @@ public class SuffixTree {
 			//Case 2: Split Edge, Create Internal Node
 			
 			//Construct new label
-			int charsMatched = matchSuffixWithLabel(suffix, node.incomingEdge.label);
-			String newLabel = new String(suffix.substring(0, charsMatched));
+			int charsMatched = matchSuffixWithLabel(suffix, node.incomingEdge.getLabel(word));
 			
 			//Remove node from parent's child list
 			SuffixTreeNode parent = node.parent;
 			this.remove(parent.children, node);
 			
 			//Create new internal node and Add internal node to parent's child list
-			//Start and End Positions for internal nodes are just 0 because multiple suffixes with different positions
-			//could be using that internal node as a path so only leaf nodes need start/end positions
-			SuffixTreeNode internalNode = new SuffixTreeNode(new SuffixTreeEdge(0, 0, newLabel), parent);
+			int internalNodeStart = node.incomingEdge.labelStartPos;
+			SuffixTreeNode internalNode = new SuffixTreeNode(new SuffixTreeEdge(internalNodeStart, internalNodeStart+charsMatched-1), parent);
 			parent.children.add(internalNode);
 			//Add old node (was removed from parent's child list) to internal node's child list
-			node.incomingEdge.label = node.incomingEdge.label.substring(charsMatched);
+			node.incomingEdge.labelStartPos = internalNodeStart+charsMatched;
 			node.parent = internalNode;
 			internalNode.children.add(node);
 			//Add new leaf node to finish off rest of suffix
-			SuffixTreeNode suffixNode = new SuffixTreeNode(new SuffixTreeEdge(start, end, suffix.substring(charsMatched)), internalNode);
+			SuffixTreeNode suffixNode = new SuffixTreeNode(new SuffixTreeEdge(start+charsMatched, end), internalNode);
 			suffixNode.position = position;
 			internalNode.children.add(suffixNode);
 		}
@@ -143,76 +144,12 @@ public class SuffixTree {
 		int i;
 		for(i = 0; i < list.size(); i++)
 		{
-			if(list.get(i).compareTo(target) == 0)
+			if(list.get(i).compareTo(target, word) == 0)
 			{
 				list.remove(i);
 				break;
 			}
 		}
-	}
-	
-	//NOTE: This method is not finished yet
-	public void maximalRepeatsTraverseTree(SuffixTreeNode node)
-	{
-		int i;
-		boolean diffLeftChars = false;
-		ArrayList<Character> diversityLabels = new ArrayList<Character>();
-		
-		for(i = 0; i < node.children.size(); i++)
-		{
-			maximalRepeatsTraverseTree(node.children.get(i));
-		}
-		
-		if(node.children.size() == 0)
-		{
-			//Leaf Node - record left characters
-			if(node.position > 1)
-			{
-				node.left = this.word.charAt(node.position-1);
-			}
-			else
-			{
-				//Empty Character - left character for first character of suffix
-				node.left = '*';
-			}
-		}
-		else
-		{
-			//Internal Node
-			i = 0;
-			for(SuffixTreeNode child : node.children)
-			{
-				if(!diversityLabels.contains(child.left))
-				{
-					//Only add new left char labels
-					diversityLabels.add(child.left);
-				}
-				
-				if(child.leftDiverse)
-				{
-					//Internal Node is left diverse if any of the children are
-					node.leftDiverse = true;
-				}
-				else
-				{
-					//Prune nodes that are not left diverse
-					node.children.remove(i);
-				}
-				i++;
-			}
-			
-			if(diversityLabels.size() > 1)
-			{
-				//Internal Node's children contain different left characters
-				diffLeftChars = true;
-			}
-			
-			if(!node.leftDiverse)
-			{
-				node.leftDiverse = diffLeftChars;
-			}
-		}
-		
 	}
 	
 	public static ArrayList<String> findRepeats(SuffixTree tree, String target)
@@ -256,7 +193,7 @@ public class SuffixTree {
 		for(SuffixTreeNode child : start.children)
 		{
 			
-			getAllStrings(child, repeats, current+child.incomingEdge.label);
+			getAllStrings(child, repeats, current+child.incomingEdge.getLabel(word));
 		}
 		
 	}
@@ -266,7 +203,7 @@ public class SuffixTree {
 		int i;
 		if(start.incomingEdge != null)
 		{
-			System.out.print("Depth " + depth + ": " + start.incomingEdge.label);
+			System.out.print("Depth " + depth + ": " + start.incomingEdge.getLabel(word));
 			if(start.children.size() == 0)
 			{
 				System.out.println(" (Leaf Node) - Start: " + start.incomingEdge.labelStartPos + ", End: " + start.incomingEdge.labelEndPos + " - Iteration Position: " + start.position);

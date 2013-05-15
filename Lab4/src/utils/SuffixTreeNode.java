@@ -7,8 +7,6 @@ public class SuffixTreeNode {
 	public SuffixTreeNode parent;
 	public ArrayList<SuffixTreeNode> children;
 	public int position = 0;
-	public char left = '0';
-	boolean leftDiverse = false;
 	
 	public SuffixTreeNode()
 	{
@@ -24,8 +22,8 @@ public class SuffixTreeNode {
 		this.children = new ArrayList<SuffixTreeNode>();
 	}
 	
-	public int compareTo(SuffixTreeNode node)
+	public int compareTo(SuffixTreeNode node, String suffixTreeWord)
 	{
-		return this.incomingEdge.label.compareTo(node.incomingEdge.label);
+		return this.incomingEdge.getLabel(suffixTreeWord).compareTo(node.incomingEdge.getLabel(suffixTreeWord));
 	}
 }
