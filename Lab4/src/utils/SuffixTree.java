@@ -24,11 +24,20 @@ public class SuffixTree {
 		System.out.println("Done!");
 		printTree(tree.root, 0);
 		System.out.println();
-		
 		ArrayList<String> repeats = findRepeats(tree, "CAT");
+
+		ArrayList<String> allStrings = new ArrayList<String>();
+
+		allStrings = findAllRepeatsOfLength(tree, 3, 4);
 		for(String repeat : repeats)
 		{
 			System.out.println(repeat);
+		}
+
+		System.out.println("All repeats:");
+		for(String s : allStrings)
+		{
+			System.out.println(s);
 		}
 	}
 	
@@ -219,6 +228,23 @@ public class SuffixTree {
 		return repeats;
 		
 	}
+
+     public static ArrayList<String> findAllRepeatsOfLength(SuffixTree tree, int min, int max)
+     {
+     	ArrayList<String> repeats = new ArrayList<String>();
+
+     	ArrayList<String> allStrings = new ArrayList<String>();
+		getAllStrings(tree.root, allStrings, "");
+	 	
+	 	// iterate through every node - check its length - process and add to results
+		for(String s : allStrings) 
+		{
+			if(s.length() >= min && s.length() <= max)
+				repeats.addAll( findRepeats(tree, s) );
+		}
+
+		return repeats;
+     }			     
 	
 	public static void getAllStrings(SuffixTreeNode start, ArrayList<String> repeats, String current)
 	{
@@ -259,4 +285,6 @@ public class SuffixTree {
 			printTree(start.children.get(i), depth+1);
 		}
 	}
+
+    
 }
