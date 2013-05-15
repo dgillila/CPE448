@@ -65,6 +65,13 @@ public class DNAUtil {
 				//TODO use a suffix tree and find all repeated sequences
 				//in the specified range that are greater than min size 
 				//and less than maxSize. Range is specified by startPosition and stopPosition
+				SuffixTree tree = new SuffixTree(dnaSequence, startPosition, stopPosition);
+
+				ArrayList<String> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);
+
+				for(int i = 0; i < repeats.size(); i++) {
+                                    results += repeats.get(i) + " ";
+                                }
 				
 			} else { //Search for repeats by specific string
 				String searchPattern = o.sequence;
