@@ -29,26 +29,16 @@ public class DNAApplication extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	protected JPanel contentPanel;
-	protected JTextField gffFileNameField, fastaFileNameField;
+	protected JTextField fastaFileNameField;
+	protected JTextField minLoopSizeField, maxLoopSizeField, minPalindromeSize, maxPalindromeSize;
 	protected JTextArea resultsField;
-	protected JButton gffBrowseButton, fastaBrowseButton, calculateButton,
-			saveButton, quitButton;
+	protected JButton fastaBrowseButton, calculateButton, saveButton, quitButton;
+	protected JCheckBox allowUGPairs;
 
-	protected JPanel additionalOptionsPanel;
-	protected JCheckBox showAdditionalOptions, toggleSearchType,
-			toggleSpaceType;
-
-	protected JTextField repeatSizeMinField, repeatSizeMaxField;
-	protected JTextField searchStartField, searchStopField,
-			filterEnrichmentThresholdField, specifiedSequencesField,
-			upstreamSizeField;
-
-	protected JPanel searchByStringPanel, searchBySizePanel;
-	protected JPanel searchUpstreamPanel, searchSpacePanel;
 
 	public DNAApplication() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Gene Content Analyzer");
+		this.setTitle("Palindrome Finder");
 		this.setMinimumSize(new Dimension(700, 500));
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
@@ -56,29 +46,18 @@ public class DNAApplication extends JFrame {
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		gffFileNameField = new JTextField(20);
 		fastaFileNameField = new JTextField(20);
 		resultsField = new JTextArea();
 		resultsField.setEditable(false);
-		gffBrowseButton = new JButton("Browse...");
 		fastaBrowseButton = new JButton("Browse...");
 		calculateButton = new JButton("Calculate");
 		saveButton = new JButton("Save");
 		quitButton = new JButton("Quit");
-
-		additionalOptionsPanel = new JPanel();
-		showAdditionalOptions = new JCheckBox("Show additional options");
-		toggleSearchType = new JCheckBox("Search By Sequence");
-		toggleSpaceType = new JCheckBox("Search Upstream");
-
-		repeatSizeMinField = new JTextField(5);
-		repeatSizeMaxField = new JTextField(5);
-
-		searchStartField = new JTextField(5);
-		searchStopField = new JTextField(5);
-		upstreamSizeField = new JTextField(5);
-		filterEnrichmentThresholdField = new JTextField(5);
-		specifiedSequencesField = new JTextField(40);
+		minLoopSizeField = new JTextField(5);
+		maxLoopSizeField = new JTextField(5);
+		minPalindromeSize = new JTextField(5);
+		maxPalindromeSize = new JTextField(5);
+		allowUGPairs = new JCheckBox("Allow U-G Pairs");
 
 		build();
 	}
@@ -86,10 +65,6 @@ public class DNAApplication extends JFrame {
 	protected void build() {
 
 		Box topBox = Box.createVerticalBox();
-		JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		inputPanel.add(new JLabel("Select a GFF File: "));
-		inputPanel.add(gffFileNameField);
-		inputPanel.add(gffBrowseButton);
 
 		JPanel inputPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		inputPanel2.add(new JLabel("Select a FASTA File: "));
@@ -97,18 +72,24 @@ public class DNAApplication extends JFrame {
 		inputPanel2.add(fastaBrowseButton);
 
 		JPanel inputPanel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		inputPanel3.add(showAdditionalOptions);
-
-		buildAdditionalOptionsPanel();
-
+		inputPanel3.add(new JLabel("Minimum Loop Size: "));
+		inputPanel3.add(minLoopSizeField);
+		inputPanel3.add(new JLabel("Maximum Loop Size: "));
+		inputPanel3.add(maxLoopSizeField);
+		
 		JPanel inputPanel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		inputPanel4.add(additionalOptionsPanel);
-		additionalOptionsPanel.setVisible(false);
+		inputPanel4.add(new JLabel("Minimum Palindrome Size (Threshold): "));
+		inputPanel4.add(minPalindromeSize);
+		inputPanel4.add(new JLabel("Maximum Palindrome Size(Threshold): "));
+		inputPanel4.add(maxPalindromeSize);
 
-		topBox.add(inputPanel);
+		JPanel inputPanel5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		inputPanel5.add(allowUGPairs);
+		
 		topBox.add(inputPanel2);
 		topBox.add(inputPanel3);
 		topBox.add(inputPanel4);
+		topBox.add(inputPanel5);
 
 		JPanel resultsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		resultsPanel.add(new JLabel("Results: "));
@@ -137,67 +118,12 @@ public class DNAApplication extends JFrame {
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 
-	protected void buildAdditionalOptionsPanel() {
-
-		searchByStringPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		searchBySizePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
-		searchBySizePanel.add(new JLabel("Minimum Repeat Size:"));
-		searchBySizePanel.add(repeatSizeMinField);
-		searchBySizePanel.add(new JLabel("Maximum Repeat Size:"));
-		searchBySizePanel.add(repeatSizeMaxField);
-
-		searchByStringPanel.add(new JLabel("DNA sequence:"));
-		searchByStringPanel.add(specifiedSequencesField);
-
-		searchByStringPanel.setVisible(false);
-
-		JPanel toggleHeader = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		toggleHeader.add(toggleSearchType);
-
-		JPanel searchSpaceHeader = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		searchSpaceHeader.add(toggleSpaceType);
-		searchSpacePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		searchSpacePanel.add(new JLabel("Start Index"));
-		searchSpacePanel.add(searchStartField);
-		searchSpacePanel.add(new JLabel("Stop Index"));
-		searchSpacePanel.add(searchStopField);
-
-		searchUpstreamPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		searchUpstreamPanel.add(new JLabel("Search Upstream Size:"));
-		searchUpstreamPanel.add(upstreamSizeField);
-
-		searchUpstreamPanel.setVisible(false);
-
-		JPanel filterHeader = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		filterHeader.add(new JLabel("Filter By Fold Enrichment Threshold:"));
-		JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		filterPanel.add(new JLabel("Threshold Value:"));
-		filterPanel.add(filterEnrichmentThresholdField);
-
-		Box vFlow = Box.createVerticalBox();
-
-		vFlow.add(toggleHeader);
-		vFlow.add(searchBySizePanel);
-		vFlow.add(searchByStringPanel);
-		vFlow.add(searchSpaceHeader);
-		vFlow.add(searchUpstreamPanel);
-		vFlow.add(searchSpacePanel);
-		vFlow.add(filterHeader);
-		vFlow.add(filterPanel);
-
-		additionalOptionsPanel.add(vFlow);
-	}
 
 	protected void addActionListeners() {
-		gffBrowseButton.addActionListener(browseListener);
 		fastaBrowseButton.addActionListener(browseListener);
 		quitButton.addActionListener(quitListener);
 		saveButton.addActionListener(saveListener);
 		calculateButton.addActionListener(calcListener);
-		showAdditionalOptions.addActionListener(toggleAdditionalOptions);
-		toggleSearchType.addActionListener(toggleSearchTypeListener);
-		toggleSpaceType.addActionListener(toggleSpaceTypeListener);
 	}
 
 	protected void quit() {
@@ -223,9 +149,7 @@ public class DNAApplication extends JFrame {
 
 			else if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File selectedFile = chooser.getSelectedFile();
-				if (e.getSource() == gffBrowseButton) {
-					gffFileNameField.setText(selectedFile.getAbsolutePath());
-				} else if (e.getSource() == fastaBrowseButton) {
+				if (e.getSource() == fastaBrowseButton) {
 					fastaFileNameField.setText(selectedFile.getAbsolutePath());
 				} else {
 					System.out.println("Oops");
@@ -284,50 +208,32 @@ public class DNAApplication extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			String gffFilepath = gffFileNameField.getText();
 			String fastaFilepath = fastaFileNameField.getText();
 
 			Options o = new Options();
-			o.gffPath = gffFilepath;
 			o.fastaPath = fastaFilepath;
-
-			if (toggleSearchType.isSelected()) {
-				System.out.println("By sequence");
-				o.sequence = specifiedSequencesField.getText();
-				o.bySize = false;
-			} else {
-				System.out.println("By size");
-				o.bySize = true;
-				try {
-					o.minSize = Integer.parseInt(repeatSizeMinField.getText());
-				} catch (Exception ex) {
-				}
-				try {
-					o.maxSize = Integer.parseInt(repeatSizeMaxField.getText());
-				} catch (Exception ex) {
-				}
+			o.allowUGPairs = allowUGPairs.isSelected();
+			
+			//Assigning all the values/default values
+			try {
+				o.minLoopSize = Integer.parseInt(minLoopSizeField.getText());
+			} catch(Exception ex) { }
+			try {
+				o.maxLoopSize = Integer.parseInt(maxLoopSizeField.getText());
+			} catch(Exception ex) { }
+			try {
+				o.minPalindromeSize = Integer.parseInt(minPalindromeSize.getText());
+			} catch(Exception ex) { }
+			try {
+				o.maxPalindromeSize = Integer.parseInt(maxPalindromeSize.getText());
+			} catch(Exception ex) { }
+			
+			if(o.minLoopSize > o.maxLoopSize || o.minPalindromeSize > o.maxPalindromeSize) {
+				JOptionPane.showMessageDialog(getThis(), "Minimum cannot be greater than maximum", "Input Error", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
-
-			if (toggleSpaceType.isSelected()) {
-				System.out.println("By upstream");
-				o.byUpstream = true;
-				try {
-					o.upstreamSize = Integer.parseInt(upstreamSizeField.getText());
-				} catch (Exception ex) {
-				}
-			} else {
-				System.out.println("By range");
-				o.byUpstream = false;
-				try {
-					o.start = Integer.parseInt(searchStartField.getText());
-				} catch (Exception ex) {
-				}
-				try {
-					o.stop = Integer.parseInt(searchStopField.getText());
-				} catch (Exception ex) {
-				}
-			}
-
+			
+			
 			ActionThread thread = new ActionThread();
 			thread.setOptions(o);
 			thread.setResultArea(resultsField);
@@ -345,42 +251,4 @@ public class DNAApplication extends JFrame {
 
 		}
 	};
-
-	ActionListener toggleAdditionalOptions = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (showAdditionalOptions.isSelected()) {
-				additionalOptionsPanel.setVisible(true);
-			} else {
-				additionalOptionsPanel.setVisible(false);
-			}
-		}
-	};
-
-	ActionListener toggleSearchTypeListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (toggleSearchType.isSelected()) {
-				searchBySizePanel.setVisible(false);
-				searchByStringPanel.setVisible(true);
-			} else {
-				searchBySizePanel.setVisible(true);
-				searchByStringPanel.setVisible(false);
-			}
-		}
-	};
-
-	ActionListener toggleSpaceTypeListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (toggleSpaceType.isSelected()) {
-				searchSpacePanel.setVisible(false);
-				searchUpstreamPanel.setVisible(true);
-			} else {
-				searchSpacePanel.setVisible(true);
-				searchUpstreamPanel.setVisible(false);
-			}
-		}
-	};
-
 }
