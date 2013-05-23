@@ -32,6 +32,12 @@ public class DNAUtil {
 		
 		String results = "";
 		
+		if(dnaSequence == null)
+		{
+			results += "DNA Sequence was never initialized. Please make sure a FASTA file has been included.";
+			return results;
+		}
+		
 		//ALL OPTION TYPES
 		//Options will be sanitized by this point
 		//So perform all calculations on the specified values
