@@ -45,8 +45,6 @@ public class SuffixTree {
 		String extension = new String();
 		int loopSize;
 		
-		System.out.println("Original: " + original);
-		System.out.println("Reverse Compliment: " + rCompliment);
 		for(q = 1; q < n; q++)
 		{
 			for(loopSize = minLoopSize; loopSize <= maxLoopSize; loopSize++)
@@ -54,7 +52,6 @@ public class SuffixTree {
 				if(q+loopSize < original.length())
 				{
 					extension = getLongestCommonExtension(this.root, original.substring(q+loopSize), rCompliment.substring(n-q));
-					System.out.println("Extension: " + extension + ", Original Substring: " + original.substring(q+loopSize) + ", RComp Substring: " + rCompliment.substring(n-q));
 					if(extension != null && extension.length() >= minPalindromeSize && extension.length() <= maxPalindromeSize)
 					{
 						locations.add(new PalindromeResult(q-extension.length()+1, q, q+loopSize+1, q+loopSize+extension.length()));
