@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.List;
+
 import model.Options;
 
 public class DNAUtil {
@@ -21,6 +23,10 @@ public class DNAUtil {
 
 		reverseCompliment = doReverseCompliment(dnaSequence);
 
+		SuffixTree tree = new SuffixTree(dnaSequence, reverseCompliment);
+		
+		List<Integer> palindromePositions = tree.findPalindromes(o.allowUGPairs, o.minPalindromeSize, o.maxPalindromeSize, o.minLoopSize, o.maxLoopSize);
+		
 		String results = "";
 
 		// DO CALCULATIONS HERE

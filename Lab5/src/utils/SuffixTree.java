@@ -2,6 +2,7 @@ package utils;
 
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SuffixTree {
 
@@ -9,6 +10,25 @@ public class SuffixTree {
 	public static String word;
 	public int startPos;
 	public int endPos;
+	
+	
+	public SuffixTree(String original, String rCompliment) {
+		//TODO Create the generalized suffix tree
+		
+	}
+	
+	public List<Integer> findPalindromes(boolean allowUGPairing, int minPalindromeSize, int maxPalindromeSize, int minLoopSize, int maxLoopSize) {
+		//TODO find palindrome locations
+		//minLoopSize and maxLoopSize are what we know as gap size
+		
+		List<Integer> locations = new ArrayList<Integer>();
+		
+		
+		
+		
+		
+		return locations;
+	}
 	
 	public SuffixTree(String treeWord)
 	{
