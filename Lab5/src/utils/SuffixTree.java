@@ -4,6 +4,8 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.PalindromeResult;
+
 public class SuffixTree {
 
 	public SuffixTreeNode root;
@@ -17,11 +19,11 @@ public class SuffixTree {
 		
 	}
 	
-	public List<Integer> findPalindromes(boolean allowUGPairing, int minPalindromeSize, int maxPalindromeSize, int minLoopSize, int maxLoopSize) {
+	public List<PalindromeResult> findPalindromes(boolean allowUGPairing, int minPalindromeSize, int maxPalindromeSize, int minLoopSize, int maxLoopSize) {
 		//TODO find palindrome locations
 		//minLoopSize and maxLoopSize are what we know as gap size
 		
-		List<Integer> locations = new ArrayList<Integer>();
+		List<PalindromeResult> locations = new ArrayList<PalindromeResult>();
 		
 		//PSEUDOCODE
 		/*
@@ -36,8 +38,8 @@ public class SuffixTree {
 		 * 			SuffixTreeNode lowestCommonAncestor = findLowestCommonAncestor(s1Node, s2Node);
 		 * 
 		 * 			if(edgeSize(lowestCommonAncestor) >= minPalindromeSize && edgeSize(lowestCommonAncestor) <= maxPalindromeSize) {
-		 * 				//It works! Yay!
-		 * 				locations.add(q - edgeSize) //I think... this may be off by 1 :/
+		 * 				//It works! Yay! Save only the left wing of the palindrome. I can get what I need from that I think...
+		 * 				locations.add(new PalindromeResult(q - edgeSize, q, q + loopSize, q + loopsize + edgeSize)) //I think... there may be off by 1 errors :/  This will also not work with those weird gaps -_-
 		 * 
 		 * 			}
 		 * 
@@ -47,7 +49,7 @@ public class SuffixTree {
 		 * 
 		 */
 		
-		
+		locations.add(new PalindromeResult(1, 4, 8, 11));
 		
 		return locations;
 	}

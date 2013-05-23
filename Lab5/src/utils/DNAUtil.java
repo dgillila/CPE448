@@ -3,6 +3,7 @@ package utils;
 import java.util.List;
 
 import model.Options;
+import model.PalindromeResult;
 
 public class DNAUtil {
 
@@ -25,13 +26,19 @@ public class DNAUtil {
 
 		SuffixTree tree = new SuffixTree(dnaSequence, reverseCompliment);
 		
-		List<Integer> palindromePositions = tree.findPalindromes(o.allowUGPairs, o.minPalindromeSize, o.maxPalindromeSize, o.minLoopSize, o.maxLoopSize);
+		List<PalindromeResult> palindromePositions = tree.findPalindromes(o.allowUGPairs, o.minPalindromeSize, o.maxPalindromeSize, o.minLoopSize, o.maxLoopSize);
 		
-		String results = "";
+		StringBuilder results = new StringBuilder();
+		results.append("Postion :     Sequence\n\n");
+		
+		for(PalindromeResult res : palindromePositions) {
+			results.append(res.leftWingStart + " : " 
+							+ dnaSequence.substring(res.leftWingStart-1, res.leftWingEnd) 
+							+ "  " + dnaSequence.substring(res.leftWingEnd, res.rightWingStart-1)
+							+ "  " + dnaSequence.substring(res.rightWingStart-1, res.rightWingEnd));
+		}
 
-		// DO CALCULATIONS HERE
-
-		return dnaSequence + "\n" + reverseCompliment;
+		return results.toString();
 	}
 
 	private static String doReverseCompliment(String sequence) {
