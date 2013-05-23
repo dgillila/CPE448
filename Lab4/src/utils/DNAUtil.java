@@ -66,7 +66,7 @@ public class DNAUtil {
 							{
 								dnaSubSequence = new StringBuffer(dnaSequence.substring(iso.getStart()+1, iso.getStart()+1+sizeRange)).reverse();
 							}
-							SuffixTree tree = new SuffixTree(dnaSubSequence.toString(), 1, dnaSubSequence.length());
+							SuffixTree tree = new SuffixTree(dnaSubSequence.toString());
 							ArrayList<String> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);
 
 							for(int i = 0; i < repeats.size(); i++) 
@@ -100,7 +100,7 @@ public class DNAUtil {
 							{
 								dnaSubSequence = new StringBuffer(dnaSequence.substring(iso.getStart()+1, iso.getStart()+1+sizeRange)).reverse();
 							}
-							SuffixTree tree = new SuffixTree(dnaSubSequence.toString(), 1, dnaSubSequence.length());
+							SuffixTree tree = new SuffixTree(dnaSubSequence.toString());
 							ArrayList<String> repeats = SuffixTree.findRepeats(tree, searchPattern);
 
 							for(int i = 0; i < repeats.size(); i++) {
@@ -124,7 +124,7 @@ public class DNAUtil {
 				//in the specified range that are greater than min size 
 				//and less than maxSize. Range is specified by startPosition and stopPosition
 				String dnaSubSequence = dnaSequence.substring(startPosition-1, stopPosition);
-				SuffixTree tree = new SuffixTree(dnaSubSequence, 1, dnaSubSequence.length());
+				SuffixTree tree = new SuffixTree(dnaSubSequence);
 
 				ArrayList<String> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);
 
@@ -135,11 +135,13 @@ public class DNAUtil {
 				
 			} else { //Search for repeats by specific string
 				String searchPattern = o.sequence;
-				
+				System.out.println("Start: " + startPosition + ", End: " + stopPosition);
 				//use a suffix tree and find all repeated sequences
 				//in the specified range that are the same as the searchPattern string
 				String dnaSubSequence = dnaSequence.substring(startPosition-1, stopPosition);
-				SuffixTree tree = new SuffixTree(dnaSubSequence, 1, dnaSubSequence.length());
+				System.out.println("DNA sequence: " + dnaSequence);
+				SuffixTree tree = new SuffixTree(dnaSubSequence);
+				System.out.println("after suffix tree");
 				ArrayList<String> repeats = SuffixTree.findRepeats(tree, searchPattern);
 
 				for(int i = 0; i < repeats.size(); i++) {
