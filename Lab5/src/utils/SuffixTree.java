@@ -23,7 +23,29 @@ public class SuffixTree {
 		
 		List<Integer> locations = new ArrayList<Integer>();
 		
-		
+		//PSEUDOCODE
+		/*
+		 * int n = word.length();
+		 * 
+		 * for(int q = 0; q < word.length(); q++) {
+		 * 		
+		 * 		SuffixTreeNode s1Node = findOriginalLeafForPosition(q+1);
+		 * 		for(int loopSize = maxLoopSize; loopSize >= minLoopSize; loopSize--) {
+		 * 			SuffixTreeNode s2Node = findPalindromeLeafForPosition(n-q+1+maxLoopSize);
+		 * 
+		 * 			SuffixTreeNode lowestCommonAncestor = findLowestCommonAncestor(s1Node, s2Node);
+		 * 
+		 * 			if(edgeSize(lowestCommonAncestor) >= minPalindromeSize && edgeSize(lowestCommonAncestor) <= maxPalindromeSize) {
+		 * 				//It works! Yay!
+		 * 				locations.add(q - edgeSize) //I think... this may be off by 1 :/
+		 * 
+		 * 			}
+		 * 
+		 * 		}
+		 * 
+		 * }
+		 * 
+		 */
 		
 		
 		
