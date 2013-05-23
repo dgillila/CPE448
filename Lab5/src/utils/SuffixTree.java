@@ -13,17 +13,55 @@ public class SuffixTree {
 	public int startPos;
 	public int endPos;
 	
-	
-	public SuffixTree(String original, String rCompliment) {
-		//TODO Create the generalized suffix tree
-		
+	public SuffixTree(String treeWord)
+	{
+		word = new String(treeWord+"$");
+		this.startPos = 1;
+		this.endPos = word.length();
+		this.constructTree();
 	}
 	
+	public SuffixTree(String original, String rCompliment) 
+	{
+		//Construct Tree from Original String
+		word = new String(original+"$");
+		this.startPos = 1;
+		this.endPos = word.length();
+		this.constructTree();
+		//Insert reverse compliment into existing tree
+		this.insertNewSuffix(rCompliment);
+	}
+	
+	//NOTE: Assumes that generalized suffix tree has already been created
 	public List<PalindromeResult> findPalindromes(boolean allowUGPairing, int minPalindromeSize, int maxPalindromeSize, int minLoopSize, int maxLoopSize) {
 		//TODO find palindrome locations
 		//minLoopSize and maxLoopSize are what we know as gap size
 		
 		List<PalindromeResult> locations = new ArrayList<PalindromeResult>();
+		String original = word.substring(0, word.indexOf("$"));
+		String rCompliment = word.substring(word.indexOf("$")+1, word.length()-1);
+		int n = original.length();
+		int q;
+		String extension = new String();
+		int loopSize;
+		
+		System.out.println("Original: " + original);
+		System.out.println("Reverse Compliment: " + rCompliment);
+		for(q = 1; q < n; q++)
+		{
+			for(loopSize = minLoopSize; loopSize <= maxLoopSize; loopSize++)
+			{
+				if(q+loopSize < original.length())
+				{
+					extension = getLongestCommonExtension(this.root, original.substring(q+loopSize), rCompliment.substring(n-q));
+					System.out.println("Extension: " + extension + ", Original Substring: " + original.substring(q+loopSize) + ", RComp Substring: " + rCompliment.substring(n-q));
+					if(extension != null && extension.length() >= minPalindromeSize && extension.length() <= maxPalindromeSize)
+					{
+						locations.add(new PalindromeResult(q-extension.length()+1, q, q+loopSize+1, q+loopSize+extension.length()));
+					}
+				}
+			}
+		}
 		
 		//PSEUDOCODE
 		/*
@@ -49,46 +87,54 @@ public class SuffixTree {
 		 * 
 		 */
 		
-		locations.add(new PalindromeResult(1, 4, 8, 11));
+		//locations.add(new PalindromeResult(1, 4, 8, 11));
 		
 		return locations;
 	}
 	
-	public SuffixTree(String treeWord)
-	{
-		word = new String(treeWord+"$");
-		this.startPos = 1;
-		this.endPos = word.length();
-		this.constructTree();
-	}
-	
 	public static void main(String[] args)
 	{
+		//***  TESTING STUFF FOR FINDING REPEATS AND GENERALIZED SUFFIX TREE CONSTRUCTION ***
 		//String str = new String("AATATTTATTTGTTACAATGAGTGAGTGTCTTTACTTTACAATATACCCTAGAGAAATGGGTTACAGGCTATATAGACTCAATACTCAGGTAAAGAGAGCGTGAGTGAGATAATGATATGAAATTAGCAATGCTATTATTTCTACACTAGCGCCACTTAGCGGCACTTACTTTTATTGCTCACGAACGACATCCTGTGGTACGCCTTGAAATCTTATTTTATTAAAAACCTTTACGGTAAAATAAGTGTGATTTTCAAATTTCATATTCTTTAAAATCGAAGTAATTTTCCATAACGTTTGTGTGCCCGTGCTGGAGGTTTGGGGGCGTGGTAACCTTCTAAAACAAACTTGTGCTGCACAAGTGTCACTAGAGTTTCCATGTTTTATGTAGCAACATGTTAAATGTTACACATACACGGCCTTAAAAACATTACTGAACAATAATCTGTTTGGTGGAATTCAAAAACAGCACATTATTAACATTGAGTTCCTATCAAAAACAGCACATTATTAACATTGAGTTCCTATTTCTCGCATCGTAATCAAAAAAACGTTGTCATGATTCATTAATTATTTACTAAAGATGTCATTTTGTAACACAGTGCTATTAATAAAGCGTTCTTACATATTTGTTCGAACATGTGAAATCCACAAATCTTACCATATTTATATTTTGGTTATCATATTCGTTTGTTTGTGACCTTTTTGATTTGCTCTTTTTTGAGGGTAATTTATTTCCAGAAGATATTTTTGAACTATTTGGATTCTGAGTGTCCATGTTAATTTGTTCGTCTTCCTGCTAAATTTTAAAGTGATGACTTAAATAGGATTAAGTCAGATTAAATAAATTAAATAAGATTAAATACATATAATTATTTTATTTTAATTAAAAAGAATTTAATACGCTCTATCCTATAGTGCAAATTTAAAATTTTAAGGTTTTGACTTAAATAAGTTAGCATTACTAAAATAAAGTGCTTAACAAAAACACTTGACAAGGTAAAAGTCAAGGGTCAATTGCACCCTCAACGAATAAAACTTTCTAATATAATCTTTTGTGACGAAAATTAAATTGCACTTGATTTTATAAATACTTGAGTGATACATGAATGTAAAGATAGCGCTAAGAATGCAGGGATTGCATACCAAAACAAAATAAGTACATGGCTAACGTGAAATAACATTTAAATAATAAAAAAAAATGTAGTTTTACCACTCTTAAAAATCAATAGTTTAGCAGAAAAACAGATTAAACATACCATATACCAACGCTCAAGACTTTTGAACACTGGGGTTAGAAAGTTTTGCTATATGCCATTAAAGGCATTTTGACATGTATTAGGAGAAAAACAGATTAAAGAAACCATATTCAAACGATAATAACTTCTGAACACTTGAGGTTAGAAACTTTTGCTATATGCCATTGAAGGCATTTTGACATATATTTTGTCTGAGTACAATACAAAAAAAAACTAATACAAAATACGTAATTTTATTTGTTTAATGTAATATTTAAATATACTACCCGAAATAAAAATACAATCCACATTAGGGGGATACTATCAAAAAGTGTTTGTATTTGCTTAACAGGGGTTCAAAAAACTATACTCCCATCTTTTGTTCAAATTTTTATTATTTAGAAGAACACGTAGCACTTAAGGAATATACACTTTTGGGAAAAATTGAAACTTTATTTATAATACCTATGTCTGAACTCTAGCTAGGATATTTATATAATAAAAAAGCTTTTCTACGAGTTCATGCTTTTTAGTGTATATATGAATACACACTGAACAATAGCACACTCTTTGGCATCGTATTGTACCTTATACATAATTTTAAATGATCCACAAAATATATAAGAGTTTGCATCCAAGTATGTCATCGATGATGGTTTCACAAATTAATAATGAGTATATTAACTAATTATACTGATGCTTAAAATATAGGTTGTTAAAAGCAGACCTATCTGGATGTTTTATCATTAGTAATTAACGTTCGGAAGTTGAAGTCCGACTGTTTCTTAGCGTTGGCAGATTCGGTACATGTAGATACAATGTTCAAAATTGAGTTAATTTTAAATGAGTAAAAGCTTTCTTCCAAAAATATTTAAAAGCTTTTAAAGCAAGTAGAATGCACATTTGGAATTCAGACCTGTATAAAAAGAAATAAACCTGCAAGACATTCTATTTCTAAGTAAAGCAAGAAAGAATGATATAGTCAGTTCCTCTACTATCAGATACTGGGTTCTTAGCTAGAGTAAGTGCGACGGAGATAGAATATATAAAAACAAATAGGAAAAGACATTTCGAGCGCTAACCAGCACAACCTGCTGCCGGCTACATTATTTTAATTTGTAGTCGTTAGGTATAGAACAAATAATAAAGTAAGATATCTTCTGCGAACCAAAGTTGATATACTTTTTAAGTATTTATATATTTGGAAAATTATGTATACTGAATAATAATACTTTATGATTAAAACAACGTAACTAAGACTAATTTTCTATTATTTTTAAATAATTTGTATACTGCTTTAATAGCAACAATAGGATTTCGTCTCCGATTTTTAAATTAAAACCGAGTAACCTCATCAGGCAGATCTCCATAATGAGCTTTAAAAATGGGAGGCCGCAATGCTGCCGGCTATTCTAGCCCCACATTTATCAAAATAAATAGTGGGAGGAAGTACTCGTTATCTAACGCATAAGTTGGTGTAAATGTTTTTTTACATAATAATTTAGCCATTAAGTCCCATTAATCAATATCAAAAGCCGTTAAAATGTCGAATATGTTTTACCTAACAAAGATGCAAAACTGGATACAAGTGATCAGTACTGGTATCAATAACATGTTCGAGGAAGCCAATACTTTGCGCAAATTGTTAAATGTCGTTTCAAAGGAAGGCGATAACTTCAAATTCGGCCAGATAAAATGTTACGGATGTTAAGGGTGTCGCAGAAATAAAAGTATCCGAGACAATGAGACGGGTAGTTTTCTAGACCTAATTCCACGCTAAGTCCGAGAAATGGCCAGCTCAAAAGTGCATAAACGTGAGCTGTGTACATGGCCTCCCAAAATTCAGCAAATCTGATTGCAGAAAACCAATATTTGGACTGCGTAAAAAAGTGATAACGTAATATATTTTTTTGCTATTGTATTGTGTTGTGAGTCGTAGATACTTCGTGGCTACTTTTTATTTTTGGTTTTTATTTATCATTACTTTATTTACAATATTTATACTTAGTCATGTTAATTTAATTATACGATCATTTTCTTTTCATTTGATTTCTTCCTTTCCGAAATTTCCTTGATCGGAAAGGTTTTCAGAATTATTGCAAAATTATTATTCTTTAGAGAATAGGCAGCGTCTCATTAGGCAGGGATTTAGGCTTGGAAGCTATCGATGGTCTAACGAGATATCCAATTTTTCCTCTCTAAGCCAACATCGGTTTTATTTGTCGCTAATGCTACATTTAGCATTTTTCACATCTCTCAAATTAGTACAAACCAAGGCTTTGTTGCAGATTTTTGGGTAGGAAAAATTCAA");
 		//str = new String("TCTGAATTTT");
-		String str = new String("ATAT");
-		SuffixTree tree = new SuffixTree(str);
-		tree.insertNewSuffix("TATT");
-		System.out.println("Done!");
+//		String str = new String("ATAT");
+//		SuffixTree tree = new SuffixTree(str);
+//		tree.insertNewSuffix("TATT");
+//		System.out.println("Done!");
+//		printTree(tree.root, 0);
+//		System.out.println();
+//		
+//		ArrayList<String> repeats = findRepeats(tree, "TTT");
+//
+//		ArrayList<String> allStrings = new ArrayList<String>();
+//
+//		allStrings = findAllRepeatsOfLength(tree, 2, 4);
+//		
+//		System.out.println("All repeats of target sequence:");
+//		for(String repeat : repeats)
+//		{
+//			System.out.println(repeat);
+//		}
+//
+//		System.out.println("All repeats of certain length:");
+//		for(String s : allStrings)
+//		{
+//			System.out.println(s);
+//		}
+		
+		//*** TESTING STUFF FOR FINDING PALINDROMES ***
+		String s1 = new String("ATCATACTGAT");
+		String s2 = new String("TAGTCATACTA");
+		SuffixTree tree = new SuffixTree(s1, s2);
 		printTree(tree.root, 0);
 		System.out.println();
 		
-		ArrayList<String> repeats = findRepeats(tree, "TTT");
-
-		ArrayList<String> allStrings = new ArrayList<String>();
-
-		allStrings = findAllRepeatsOfLength(tree, 2, 4);
+		List<PalindromeResult> palindromes = tree.findPalindromes(false, 3, 3, 1, 1);
 		
-		System.out.println("All repeats of target sequence:");
-		for(String repeat : repeats)
+		System.out.println("Starting Palindrome Testing: ");
+		for(PalindromeResult pr : palindromes)
 		{
-			System.out.println(repeat);
-		}
-
-		System.out.println("All repeats of certain length:");
-		for(String s : allStrings)
-		{
-			System.out.println(s);
+			System.out.println("Left Wing (Start,End): " + pr.leftWingStart + ", " + pr.leftWingEnd + ", Right Wing (Start, End): " + pr.rightWingStart + ", " + pr.rightWingEnd);
 		}
 		
 	}
@@ -117,7 +163,6 @@ public class SuffixTree {
 		int i;
 		for(i = this.startPos; i <= this.endPos; i++)
 		{
-			System.out.println("Loop: " + word.substring(i-1));
 			this.addSuffix(i, this.endPos, word.substring(i-1));
 		}
 	}
@@ -305,23 +350,16 @@ public class SuffixTree {
 	}
 	
 	//NOTE: This is naive implementation of lowest common ancestor algorithm
+	//Traces both nodes up the tree until a common node is reached
 	public static SuffixTreeNode findLowestCommonAncestor(SuffixTreeNode node1, SuffixTreeNode node2)
 	{
 		SuffixTreeNode t1 = node1;
 		SuffixTreeNode t2 = node2;
 		
-		while(t1.compareTo(t2, word) != 0)
+		while(t1.incomingEdge != null && t2.incomingEdge != null && t1.compareTo(t2, word) != 0)
 		{
-			if(t1.incomingEdge == null || t2.incomingEdge == null)
-			{
-				//One of the nodes hit the root
-				break;
-			}
-			else
-			{
-				t1 = t1.parent;
-				t2 = t2.parent;
-			}
+			t1 = t1.parent;
+			t2 = t2.parent;
 		}
 		
 		if(t1.incomingEdge == null)
@@ -336,41 +374,63 @@ public class SuffixTree {
 		}
 	}
 	
-	//NOTE: Returns null in target if s1 is not found
-	public static void findNode(SuffixTreeNode start, String s1, String current, SuffixTreeNode target)
+	//NOTE: Returns null if no prefix of s1 is found
+	public static SuffixTreeNode findNode(SuffixTreeNode start, String s1)
 	{
-		if(current.equals(s1))
+		
+		SuffixTreeNode node = start;
+		String current = new String();
+		int prevCurrentLength = 0;
+		while(node.children.size() > 0)
 		{
-			target = start;
+			prevCurrentLength = current.length();
+			for(SuffixTreeNode child : node.children)
+			{
+				String temp = current+child.incomingEdge.getLabel(word);
+				if(temp.equals(s1))
+				{
+					return child;
+				}
+				else if(s1.startsWith(temp))
+				{
+					current += child.incomingEdge.getLabel(word);
+					node = child;
+					break;
+				}
+			}
+			if(current.length() == prevCurrentLength)
+			{
+				//Iterated through all children and did not update node
+				break;
+			}
 		}
-		else if(start.children.size() == 0)
+		
+		if(current.length() == 0)
 		{
-			target = null;
+			return null;
 		}
 		else
 		{
-			if(current.length() < s1.length() && s1.startsWith(current))
-			{
-				for(SuffixTreeNode child : start.children)
-				{
-					findNode(child, s1, current+child.incomingEdge.getLabel(word), target);
-				}
-			}
+			return node;
 		}
 	}
 	
 	//NOTE: returns null if strings s1 or s2 were not found in tree
-	public static SuffixTreeNode getLongestCommonExtension(SuffixTreeNode start, String s1, String s2)
+	public static String getLongestCommonExtension(SuffixTreeNode start, String s1, String s2)
 	{
-		SuffixTreeNode n1 = new SuffixTreeNode();
-		SuffixTreeNode n2 = new SuffixTreeNode();
-		
-		SuffixTree.findNode(start, s1, "", n1);
-		SuffixTree.findNode(start, s2, "", n2);
+		SuffixTreeNode n1 = SuffixTree.findNode(start, s1);
+		SuffixTreeNode n2 = SuffixTree.findNode(start, s2);
 		
 		if(n1 != null && n2 != null)
 		{
-			return SuffixTree.findLowestCommonAncestor(n1, n2);
+			SuffixTreeNode lca = SuffixTree.findLowestCommonAncestor(n1, n2);
+			String extension = new String();
+			while(lca.incomingEdge != null)
+			{
+				extension = lca.incomingEdge.getLabel(word) + extension;
+				lca = lca.parent;
+			}
+			return extension;
 		}
 		else
 		{
