@@ -159,6 +159,7 @@ public class DNAFileReader {
 		String line = reader.readLine();
 		while(line != null) {
 			line = line.replace('T', 'U');
+			line = line.replace(" ", "");
 			builder.append(line);
 			
 			line = reader.readLine();

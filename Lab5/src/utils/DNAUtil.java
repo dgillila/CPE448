@@ -35,7 +35,7 @@ public class DNAUtil {
 			results.append(res.leftWingStart + " : " 
 							+ dnaSequence.substring(res.leftWingStart-1, res.leftWingEnd) 
 							+ "  " + dnaSequence.substring(res.leftWingEnd, res.rightWingStart-1)
-							+ "  " + dnaSequence.substring(res.rightWingStart-1, res.rightWingEnd));
+							+ "  " + dnaSequence.substring(res.rightWingStart-1, res.rightWingEnd) + "\n");
 		}
 
 		return results.toString();
