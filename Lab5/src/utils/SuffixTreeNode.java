@@ -6,7 +6,7 @@ public class SuffixTreeNode {
 	public SuffixTreeEdge incomingEdge;
 	public SuffixTreeNode parent;
 	public ArrayList<SuffixTreeNode> children;
-	public int position = 0;
+	public ArrayList<Integer> positions = new ArrayList<Integer>();
 	
 	public SuffixTreeNode()
 	{

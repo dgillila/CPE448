@@ -10,19 +10,21 @@ public class SuffixTree {
 	public int startPos;
 	public int endPos;
 	
-	public SuffixTree(String treeWord, int start, int end)
+	public SuffixTree(String treeWord)
 	{
 		word = new String(treeWord+"$");
-		this.startPos = start;
-		this.endPos = end+1;
+		this.startPos = 1;
+		this.endPos = word.length();
 		this.constructTree();
 	}
 	
 	public static void main(String[] args)
 	{
-		String str = new String("AATATTTATTTGTTACAATGAGTGAGTGTCTTTACTTTACAATATACCCTAGAGAAATGGGTTACAGGCTATATAGACTCAATACTCAGGTAAAGAGAGCGTGAGTGAGATAATGATATGAAATTAGCAATGCTATTATTTCTACACTAGCGCCACTTAGCGGCACTTACTTTTATTGCTCACGAACGACATCCTGTGGTACGCCTTGAAATCTTATTTTATTAAAAACCTTTACGGTAAAATAAGTGTGATTTTCAAATTTCATATTCTTTAAAATCGAAGTAATTTTCCATAACGTTTGTGTGCCCGTGCTGGAGGTTTGGGGGCGTGGTAACCTTCTAAAACAAACTTGTGCTGCACAAGTGTCACTAGAGTTTCCATGTTTTATGTAGCAACATGTTAAATGTTACACATACACGGCCTTAAAAACATTACTGAACAATAATCTGTTTGGTGGAATTCAAAAACAGCACATTATTAACATTGAGTTCCTATCAAAAACAGCACATTATTAACATTGAGTTCCTATTTCTCGCATCGTAATCAAAAAAACGTTGTCATGATTCATTAATTATTTACTAAAGATGTCATTTTGTAACACAGTGCTATTAATAAAGCGTTCTTACATATTTGTTCGAACATGTGAAATCCACAAATCTTACCATATTTATATTTTGGTTATCATATTCGTTTGTTTGTGACCTTTTTGATTTGCTCTTTTTTGAGGGTAATTTATTTCCAGAAGATATTTTTGAACTATTTGGATTCTGAGTGTCCATGTTAATTTGTTCGTCTTCCTGCTAAATTTTAAAGTGATGACTTAAATAGGATTAAGTCAGATTAAATAAATTAAATAAGATTAAATACATATAATTATTTTATTTTAATTAAAAAGAATTTAATACGCTCTATCCTATAGTGCAAATTTAAAATTTTAAGGTTTTGACTTAAATAAGTTAGCATTACTAAAATAAAGTGCTTAACAAAAACACTTGACAAGGTAAAAGTCAAGGGTCAATTGCACCCTCAACGAATAAAACTTTCTAATATAATCTTTTGTGACGAAAATTAAATTGCACTTGATTTTATAAATACTTGAGTGATACATGAATGTAAAGATAGCGCTAAGAATGCAGGGATTGCATACCAAAACAAAATAAGTACATGGCTAACGTGAAATAACATTTAAATAATAAAAAAAAATGTAGTTTTACCACTCTTAAAAATCAATAGTTTAGCAGAAAAACAGATTAAACATACCATATACCAACGCTCAAGACTTTTGAACACTGGGGTTAGAAAGTTTTGCTATATGCCATTAAAGGCATTTTGACATGTATTAGGAGAAAAACAGATTAAAGAAACCATATTCAAACGATAATAACTTCTGAACACTTGAGGTTAGAAACTTTTGCTATATGCCATTGAAGGCATTTTGACATATATTTTGTCTGAGTACAATACAAAAAAAAACTAATACAAAATACGTAATTTTATTTGTTTAATGTAATATTTAAATATACTACCCGAAATAAAAATACAATCCACATTAGGGGGATACTATCAAAAAGTGTTTGTATTTGCTTAACAGGGGTTCAAAAAACTATACTCCCATCTTTTGTTCAAATTTTTATTATTTAGAAGAACACGTAGCACTTAAGGAATATACACTTTTGGGAAAAATTGAAACTTTATTTATAATACCTATGTCTGAACTCTAGCTAGGATATTTATATAATAAAAAAGCTTTTCTACGAGTTCATGCTTTTTAGTGTATATATGAATACACACTGAACAATAGCACACTCTTTGGCATCGTATTGTACCTTATACATAATTTTAAATGATCCACAAAATATATAAGAGTTTGCATCCAAGTATGTCATCGATGATGGTTTCACAAATTAATAATGAGTATATTAACTAATTATACTGATGCTTAAAATATAGGTTGTTAAAAGCAGACCTATCTGGATGTTTTATCATTAGTAATTAACGTTCGGAAGTTGAAGTCCGACTGTTTCTTAGCGTTGGCAGATTCGGTACATGTAGATACAATGTTCAAAATTGAGTTAATTTTAAATGAGTAAAAGCTTTCTTCCAAAAATATTTAAAAGCTTTTAAAGCAAGTAGAATGCACATTTGGAATTCAGACCTGTATAAAAAGAAATAAACCTGCAAGACATTCTATTTCTAAGTAAAGCAAGAAAGAATGATATAGTCAGTTCCTCTACTATCAGATACTGGGTTCTTAGCTAGAGTAAGTGCGACGGAGATAGAATATATAAAAACAAATAGGAAAAGACATTTCGAGCGCTAACCAGCACAACCTGCTGCCGGCTACATTATTTTAATTTGTAGTCGTTAGGTATAGAACAAATAATAAAGTAAGATATCTTCTGCGAACCAAAGTTGATATACTTTTTAAGTATTTATATATTTGGAAAATTATGTATACTGAATAATAATACTTTATGATTAAAACAACGTAACTAAGACTAATTTTCTATTATTTTTAAATAATTTGTATACTGCTTTAATAGCAACAATAGGATTTCGTCTCCGATTTTTAAATTAAAACCGAGTAACCTCATCAGGCAGATCTCCATAATGAGCTTTAAAAATGGGAGGCCGCAATGCTGCCGGCTATTCTAGCCCCACATTTATCAAAATAAATAGTGGGAGGAAGTACTCGTTATCTAACGCATAAGTTGGTGTAAATGTTTTTTTACATAATAATTTAGCCATTAAGTCCCATTAATCAATATCAAAAGCCGTTAAAATGTCGAATATGTTTTACCTAACAAAGATGCAAAACTGGATACAAGTGATCAGTACTGGTATCAATAACATGTTCGAGGAAGCCAATACTTTGCGCAAATTGTTAAATGTCGTTTCAAAGGAAGGCGATAACTTCAAATTCGGCCAGATAAAATGTTACGGATGTTAAGGGTGTCGCAGAAATAAAAGTATCCGAGACAATGAGACGGGTAGTTTTCTAGACCTAATTCCACGCTAAGTCCGAGAAATGGCCAGCTCAAAAGTGCATAAACGTGAGCTGTGTACATGGCCTCCCAAAATTCAGCAAATCTGATTGCAGAAAACCAATATTTGGACTGCGTAAAAAAGTGATAACGTAATATATTTTTTTGCTATTGTATTGTGTTGTGAGTCGTAGATACTTCGTGGCTACTTTTTATTTTTGGTTTTTATTTATCATTACTTTATTTACAATATTTATACTTAGTCATGTTAATTTAATTATACGATCATTTTCTTTTCATTTGATTTCTTCCTTTCCGAAATTTCCTTGATCGGAAAGGTTTTCAGAATTATTGCAAAATTATTATTCTTTAGAGAATAGGCAGCGTCTCATTAGGCAGGGATTTAGGCTTGGAAGCTATCGATGGTCTAACGAGATATCCAATTTTTCCTCTCTAAGCCAACATCGGTTTTATTTGTCGCTAATGCTACATTTAGCATTTTTCACATCTCTCAAATTAGTACAAACCAAGGCTTTGTTGCAGATTTTTGGGTAGGAAAAATTCAA");
-		str = new String("TCTGAATTTT");
-		SuffixTree tree = new SuffixTree(str, 1, str.length());
+		//String str = new String("AATATTTATTTGTTACAATGAGTGAGTGTCTTTACTTTACAATATACCCTAGAGAAATGGGTTACAGGCTATATAGACTCAATACTCAGGTAAAGAGAGCGTGAGTGAGATAATGATATGAAATTAGCAATGCTATTATTTCTACACTAGCGCCACTTAGCGGCACTTACTTTTATTGCTCACGAACGACATCCTGTGGTACGCCTTGAAATCTTATTTTATTAAAAACCTTTACGGTAAAATAAGTGTGATTTTCAAATTTCATATTCTTTAAAATCGAAGTAATTTTCCATAACGTTTGTGTGCCCGTGCTGGAGGTTTGGGGGCGTGGTAACCTTCTAAAACAAACTTGTGCTGCACAAGTGTCACTAGAGTTTCCATGTTTTATGTAGCAACATGTTAAATGTTACACATACACGGCCTTAAAAACATTACTGAACAATAATCTGTTTGGTGGAATTCAAAAACAGCACATTATTAACATTGAGTTCCTATCAAAAACAGCACATTATTAACATTGAGTTCCTATTTCTCGCATCGTAATCAAAAAAACGTTGTCATGATTCATTAATTATTTACTAAAGATGTCATTTTGTAACACAGTGCTATTAATAAAGCGTTCTTACATATTTGTTCGAACATGTGAAATCCACAAATCTTACCATATTTATATTTTGGTTATCATATTCGTTTGTTTGTGACCTTTTTGATTTGCTCTTTTTTGAGGGTAATTTATTTCCAGAAGATATTTTTGAACTATTTGGATTCTGAGTGTCCATGTTAATTTGTTCGTCTTCCTGCTAAATTTTAAAGTGATGACTTAAATAGGATTAAGTCAGATTAAATAAATTAAATAAGATTAAATACATATAATTATTTTATTTTAATTAAAAAGAATTTAATACGCTCTATCCTATAGTGCAAATTTAAAATTTTAAGGTTTTGACTTAAATAAGTTAGCATTACTAAAATAAAGTGCTTAACAAAAACACTTGACAAGGTAAAAGTCAAGGGTCAATTGCACCCTCAACGAATAAAACTTTCTAATATAATCTTTTGTGACGAAAATTAAATTGCACTTGATTTTATAAATACTTGAGTGATACATGAATGTAAAGATAGCGCTAAGAATGCAGGGATTGCATACCAAAACAAAATAAGTACATGGCTAACGTGAAATAACATTTAAATAATAAAAAAAAATGTAGTTTTACCACTCTTAAAAATCAATAGTTTAGCAGAAAAACAGATTAAACATACCATATACCAACGCTCAAGACTTTTGAACACTGGGGTTAGAAAGTTTTGCTATATGCCATTAAAGGCATTTTGACATGTATTAGGAGAAAAACAGATTAAAGAAACCATATTCAAACGATAATAACTTCTGAACACTTGAGGTTAGAAACTTTTGCTATATGCCATTGAAGGCATTTTGACATATATTTTGTCTGAGTACAATACAAAAAAAAACTAATACAAAATACGTAATTTTATTTGTTTAATGTAATATTTAAATATACTACCCGAAATAAAAATACAATCCACATTAGGGGGATACTATCAAAAAGTGTTTGTATTTGCTTAACAGGGGTTCAAAAAACTATACTCCCATCTTTTGTTCAAATTTTTATTATTTAGAAGAACACGTAGCACTTAAGGAATATACACTTTTGGGAAAAATTGAAACTTTATTTATAATACCTATGTCTGAACTCTAGCTAGGATATTTATATAATAAAAAAGCTTTTCTACGAGTTCATGCTTTTTAGTGTATATATGAATACACACTGAACAATAGCACACTCTTTGGCATCGTATTGTACCTTATACATAATTTTAAATGATCCACAAAATATATAAGAGTTTGCATCCAAGTATGTCATCGATGATGGTTTCACAAATTAATAATGAGTATATTAACTAATTATACTGATGCTTAAAATATAGGTTGTTAAAAGCAGACCTATCTGGATGTTTTATCATTAGTAATTAACGTTCGGAAGTTGAAGTCCGACTGTTTCTTAGCGTTGGCAGATTCGGTACATGTAGATACAATGTTCAAAATTGAGTTAATTTTAAATGAGTAAAAGCTTTCTTCCAAAAATATTTAAAAGCTTTTAAAGCAAGTAGAATGCACATTTGGAATTCAGACCTGTATAAAAAGAAATAAACCTGCAAGACATTCTATTTCTAAGTAAAGCAAGAAAGAATGATATAGTCAGTTCCTCTACTATCAGATACTGGGTTCTTAGCTAGAGTAAGTGCGACGGAGATAGAATATATAAAAACAAATAGGAAAAGACATTTCGAGCGCTAACCAGCACAACCTGCTGCCGGCTACATTATTTTAATTTGTAGTCGTTAGGTATAGAACAAATAATAAAGTAAGATATCTTCTGCGAACCAAAGTTGATATACTTTTTAAGTATTTATATATTTGGAAAATTATGTATACTGAATAATAATACTTTATGATTAAAACAACGTAACTAAGACTAATTTTCTATTATTTTTAAATAATTTGTATACTGCTTTAATAGCAACAATAGGATTTCGTCTCCGATTTTTAAATTAAAACCGAGTAACCTCATCAGGCAGATCTCCATAATGAGCTTTAAAAATGGGAGGCCGCAATGCTGCCGGCTATTCTAGCCCCACATTTATCAAAATAAATAGTGGGAGGAAGTACTCGTTATCTAACGCATAAGTTGGTGTAAATGTTTTTTTACATAATAATTTAGCCATTAAGTCCCATTAATCAATATCAAAAGCCGTTAAAATGTCGAATATGTTTTACCTAACAAAGATGCAAAACTGGATACAAGTGATCAGTACTGGTATCAATAACATGTTCGAGGAAGCCAATACTTTGCGCAAATTGTTAAATGTCGTTTCAAAGGAAGGCGATAACTTCAAATTCGGCCAGATAAAATGTTACGGATGTTAAGGGTGTCGCAGAAATAAAAGTATCCGAGACAATGAGACGGGTAGTTTTCTAGACCTAATTCCACGCTAAGTCCGAGAAATGGCCAGCTCAAAAGTGCATAAACGTGAGCTGTGTACATGGCCTCCCAAAATTCAGCAAATCTGATTGCAGAAAACCAATATTTGGACTGCGTAAAAAAGTGATAACGTAATATATTTTTTTGCTATTGTATTGTGTTGTGAGTCGTAGATACTTCGTGGCTACTTTTTATTTTTGGTTTTTATTTATCATTACTTTATTTACAATATTTATACTTAGTCATGTTAATTTAATTATACGATCATTTTCTTTTCATTTGATTTCTTCCTTTCCGAAATTTCCTTGATCGGAAAGGTTTTCAGAATTATTGCAAAATTATTATTCTTTAGAGAATAGGCAGCGTCTCATTAGGCAGGGATTTAGGCTTGGAAGCTATCGATGGTCTAACGAGATATCCAATTTTTCCTCTCTAAGCCAACATCGGTTTTATTTGTCGCTAATGCTACATTTAGCATTTTTCACATCTCTCAAATTAGTACAAACCAAGGCTTTGTTGCAGATTTTTGGGTAGGAAAAATTCAA");
+		//str = new String("TCTGAATTTT");
+		String str = new String("ATAT");
+		SuffixTree tree = new SuffixTree(str);
+		tree.insertNewSuffix("TATT");
 		System.out.println("Done!");
 		printTree(tree.root, 0);
 		System.out.println();
@@ -32,12 +34,14 @@ public class SuffixTree {
 		ArrayList<String> allStrings = new ArrayList<String>();
 
 		allStrings = findAllRepeatsOfLength(tree, 2, 4);
+		
+		System.out.println("All repeats of target sequence:");
 		for(String repeat : repeats)
 		{
 			System.out.println(repeat);
 		}
 
-		System.out.println("All repeats:");
+		System.out.println("All repeats of certain length:");
 		for(String s : allStrings)
 		{
 			System.out.println(s);
@@ -47,21 +51,48 @@ public class SuffixTree {
 	
 	public void constructTree()
 	{
-		this.root = new SuffixTreeNode();
-		int i;
 		
-		for(i = 0; i < word.length(); i++)
+		//Constructing tree from first string
+		this.root = new SuffixTreeNode();
+		
+		int i;
+		for(i = this.startPos; i <= this.endPos; i++)
 		{
-			this.addSuffix(this.startPos+i, this.endPos, word.substring(i), i+1);
+			this.addSuffix(i, this.endPos, word.substring(i-1));
 		}
 	}
 	
-	public void addSuffix(int start, int end, String suffix, int position)
+	//NOTE: Assumes that tree has been initialized already
+	public void insertNewSuffix(String newSuffix)
+	{
+		int oldStrLength = word.length();
+		word = new String(word + newSuffix + "$");
+		this.startPos = oldStrLength+1;
+		this.endPos = word.length();
+		
+		int i;
+		for(i = this.startPos; i <= this.endPos; i++)
+		{
+			System.out.println("Loop: " + word.substring(i-1));
+			this.addSuffix(i, this.endPos, word.substring(i-1));
+		}
+	}
+	
+	public void addSuffix(int start, int end, String suffix)
 	{
 		StringBuilder tempSuffix = new StringBuilder(suffix);
 		SuffixTreeNode node = findPosition(this.root, tempSuffix);
-		int charsRemoved = suffix.length() - tempSuffix.length();
-		this.insertSuffix(start+charsRemoved, end, node, new String(tempSuffix), position);
+		if(tempSuffix.length() > 0)
+		{
+			int charsRemoved = suffix.length() - tempSuffix.length();
+			this.insertSuffix(start+charsRemoved, end, node, new String(tempSuffix), start);
+		}
+		else
+		{
+			//Length of tempSuffix is 0 it means that a complete match in tree was found
+			//so there is nothing to insert
+			node.positions.add(start);
+		}
 	}
 	
 	//NOTE: Method modifies suffix parameter
@@ -107,11 +138,12 @@ public class SuffixTree {
 	
 	public void insertSuffix(int start, int end, SuffixTreeNode node, String suffix, int position)
 	{
-		if(node.incomingEdge == null || suffix.startsWith(node.incomingEdge.getLabel(word)) || suffix.charAt(0) != node.incomingEdge.getLabel(word).charAt(0))
+		if(node.incomingEdge == null || suffix.startsWith(node.incomingEdge.getLabel(word)) || 
+				suffix.charAt(0) != node.incomingEdge.getLabel(word).charAt(0))
 		{
 			//Case 1: Only add leaf node
 			SuffixTreeNode leafNode = new SuffixTreeNode(new SuffixTreeEdge(start, end), node);
-			leafNode.position = position;
+			leafNode.positions.add(position);
 			node.children.add(leafNode);
 		}
 		else
@@ -135,7 +167,7 @@ public class SuffixTree {
 			internalNode.children.add(node);
 			//Add new leaf node to finish off rest of suffix
 			SuffixTreeNode suffixNode = new SuffixTreeNode(new SuffixTreeEdge(start+charsMatched, end), internalNode);
-			suffixNode.position = position;
+			suffixNode.positions.add(position);
 			internalNode.children.add(suffixNode);
 		}
 	}
@@ -156,13 +188,7 @@ public class SuffixTree {
 	public static ArrayList<String> findRepeats(SuffixTree tree, String target)
 	{
 		ArrayList<String> repeats = new ArrayList<String>();
-		SuffixTreeNode node = findPosition(tree.root, new StringBuilder(target));
-		
-		if(node.incomingEdge != null)
-		{
-			//Not Root Node
-			getAllLeafStrings(node, repeats, target);
-		}
+		getRepeatsUsingTarget(tree.root, repeats, target, "");
 		return repeats;
 		
 	}
@@ -170,52 +196,142 @@ public class SuffixTree {
      public static ArrayList<String> findAllRepeatsOfLength(SuffixTree tree, int min, int max)
      {
      	ArrayList<String> repeats = new ArrayList<String>();
-
-     	ArrayList<String> allStrings = new ArrayList<String>();
-		getAllInternalNodeStringsOfLength(tree.root, allStrings, "", min, max);
-	 	
-	 	// iterate through every node - check its length - process and add to results
-		for(String s : allStrings) 
-		{
-			if(s.length() >= min && s.length() <= max)
-				repeats.addAll( findRepeats(tree, s) );
-		}
+     	ArrayList<SuffixTreeNode> internalNodes = new ArrayList<SuffixTreeNode>();
+     	ArrayList<String> fullInternalNodeLabels = new ArrayList<String>();
+     	
+     	getAllInternalNodesOfLength(tree.root, internalNodes, fullInternalNodeLabels, "", min, max);
+     	
+     	int i;
+     	for(i = 0; i < internalNodes.size() && i < fullInternalNodeLabels.size(); i++)
+     	{
+     		getLeafStringsFromNode(internalNodes.get(i), fullInternalNodeLabels.get(i), repeats);
+     	}
 
 		return repeats;
      }			     
 	
-	public static void getAllLeafStrings(SuffixTreeNode start, ArrayList<String> repeats, String current)
+	public static void getRepeatsUsingTarget(SuffixTreeNode start, ArrayList<String> repeats, String target, String current)
 	{
-		if(start.children.size() == 0)
+		if(start.children.size() == 0 && current.startsWith(target))
 		{
 			//Leaf Node
 			repeats.add(current);
 		}
-		for(SuffixTreeNode child : start.children)
+		else if(current.length() == 0 || target.startsWith(current))
 		{
-			
-			getAllLeafStrings(child, repeats, current+child.incomingEdge.getLabel(word));
+			//Root Node or Path label is prefix of target string
+			for(SuffixTreeNode child : start.children)
+			{
+				
+				getRepeatsUsingTarget(child, repeats, target, current+child.incomingEdge.getLabel(word));
+			}
 		}
 		
 	}
 	
-	public static void getAllInternalNodeStringsOfLength(SuffixTreeNode start, ArrayList<String> repeats, String current, int min, int max)
+	public static void getAllInternalNodesOfLength(SuffixTreeNode start, ArrayList<SuffixTreeNode> nodes, ArrayList<String> nodeLabels, String current, int min, int max)
 	{
 		if(current.length() >= min && current.length() <= max && start.children.size() > 0)
 		{
-			//Found Repeat if path label is the correct size
-			repeats.add(current);
+			nodes.add(start);
+			nodeLabels.add(current);
 		}
-		else if(current.length() < min)
+		else if(current.length() <= max)
 		{
-			//Keep searching since path label lengths are not long enough yet
 			for(SuffixTreeNode child : start.children)
 			{
-				
-				getAllInternalNodeStringsOfLength(child, repeats, current+child.incomingEdge.getLabel(word), min, max);
+				getAllInternalNodesOfLength(child, nodes, nodeLabels, current+child.incomingEdge.getLabel(word), min, max);
 			}
 		}
-		//If path label lengths are too big stop searching (don't do anything)
+	}
+	
+	public static void getLeafStringsFromNode(SuffixTreeNode start, String currentLabel, ArrayList<String> repeats)
+	{
+		if(start.children.size() == 0)
+		{
+			repeats.add(currentLabel);
+		}
+		else
+		{
+			for(SuffixTreeNode child : start.children)
+			{
+				getLeafStringsFromNode(child, currentLabel+child.incomingEdge.getLabel(word), repeats);
+			}
+		}
+	}
+	
+	//NOTE: This is naive implementation of lowest common ancestor algorithm
+	public static SuffixTreeNode findLowestCommonAncestor(SuffixTreeNode node1, SuffixTreeNode node2)
+	{
+		SuffixTreeNode t1 = node1;
+		SuffixTreeNode t2 = node2;
+		
+		while(t1.compareTo(t2, word) != 0)
+		{
+			if(t1.incomingEdge == null || t2.incomingEdge == null)
+			{
+				//One of the nodes hit the root
+				break;
+			}
+			else
+			{
+				t1 = t1.parent;
+				t2 = t2.parent;
+			}
+		}
+		
+		if(t1.incomingEdge == null)
+		{
+			//Node 1 hit the root so that is lca
+			return t1;
+		}
+		else
+		{
+			//Either Node 2 hit the root or the nodes are equal so it is lca
+			return t2;
+		}
+	}
+	
+	//NOTE: Returns null in target if s1 is not found
+	public static void findNode(SuffixTreeNode start, String s1, String current, SuffixTreeNode target)
+	{
+		if(current.equals(s1))
+		{
+			target = start;
+		}
+		else if(start.children.size() == 0)
+		{
+			target = null;
+		}
+		else
+		{
+			if(current.length() < s1.length() && s1.startsWith(current))
+			{
+				for(SuffixTreeNode child : start.children)
+				{
+					findNode(child, s1, current+child.incomingEdge.getLabel(word), target);
+				}
+			}
+		}
+	}
+	
+	//NOTE: returns null if strings s1 or s2 were not found in tree
+	public static SuffixTreeNode getLongestCommonExtension(SuffixTreeNode start, String s1, String s2)
+	{
+		SuffixTreeNode n1 = new SuffixTreeNode();
+		SuffixTreeNode n2 = new SuffixTreeNode();
+		
+		SuffixTree.findNode(start, s1, "", n1);
+		SuffixTree.findNode(start, s2, "", n2);
+		
+		if(n1 != null && n2 != null)
+		{
+			return SuffixTree.findLowestCommonAncestor(n1, n2);
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	public static void printTree(SuffixTreeNode start, int depth)
@@ -226,7 +342,13 @@ public class SuffixTree {
 			System.out.print("Depth " + depth + ": " + start.incomingEdge.getLabel(word));
 			if(start.children.size() == 0)
 			{
-				System.out.println(" (Leaf Node) - Start: " + start.incomingEdge.labelStartPos + ", End: " + start.incomingEdge.labelEndPos + " - Iteration Position: " + start.position);
+				System.out.print(" (Leaf Node) - Start: " + start.incomingEdge.labelStartPos + ", End: " + start.incomingEdge.labelEndPos + " - Iteration Positions: ");
+				int j;
+				for(j = 0; j < start.positions.size() - 1; j++)
+				{
+					System.out.print(start.positions.get(j) + ", ");
+				}
+				System.out.println(start.positions.get(j));
 			}
 			else
 			{
