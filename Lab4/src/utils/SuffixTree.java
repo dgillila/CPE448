@@ -10,38 +10,40 @@ public class SuffixTree {
 	public int startPos;
 	public int endPos;
 	
-	public SuffixTree(String treeWord, int start, int end)
+	public SuffixTree(String treeWord)
 	{
 		word = new String(treeWord+"$");
-		this.startPos = start;
-		this.endPos = end+1;
+		this.startPos = 1;
+		this.endPos = word.length();
 		this.constructTree();
 	}
 	
 	public static void main(String[] args)
 	{
-		String str = new String("AATATTTATTTGTTACAATGAGTGAGTGTCTTTACTTTACAATATACCCTAGAGAAATGGGTTACAGGCTATATAGACTCAATACTCAGGTAAAGAGAGCGTGAGTGAGATAATGATATGAAATTAGCAATGCTATTATTTCTACACTAGCGCCACTTAGCGGCACTTACTTTTATTGCTCACGAACGACATCCTGTGGTACGCCTTGAAATCTTATTTTATTAAAAACCTTTACGGTAAAATAAGTGTGATTTTCAAATTTCATATTCTTTAAAATCGAAGTAATTTTCCATAACGTTTGTGTGCCCGTGCTGGAGGTTTGGGGGCGTGGTAACCTTCTAAAACAAACTTGTGCTGCACAAGTGTCACTAGAGTTTCCATGTTTTATGTAGCAACATGTTAAATGTTACACATACACGGCCTTAAAAACATTACTGAACAATAATCTGTTTGGTGGAATTCAAAAACAGCACATTATTAACATTGAGTTCCTATCAAAAACAGCACATTATTAACATTGAGTTCCTATTTCTCGCATCGTAATCAAAAAAACGTTGTCATGATTCATTAATTATTTACTAAAGATGTCATTTTGTAACACAGTGCTATTAATAAAGCGTTCTTACATATTTGTTCGAACATGTGAAATCCACAAATCTTACCATATTTATATTTTGGTTATCATATTCGTTTGTTTGTGACCTTTTTGATTTGCTCTTTTTTGAGGGTAATTTATTTCCAGAAGATATTTTTGAACTATTTGGATTCTGAGTGTCCATGTTAATTTGTTCGTCTTCCTGCTAAATTTTAAAGTGATGACTTAAATAGGATTAAGTCAGATTAAATAAATTAAATAAGATTAAATACATATAATTATTTTATTTTAATTAAAAAGAATTTAATACGCTCTATCCTATAGTGCAAATTTAAAATTTTAAGGTTTTGACTTAAATAAGTTAGCATTACTAAAATAAAGTGCTTAACAAAAACACTTGACAAGGTAAAAGTCAAGGGTCAATTGCACCCTCAACGAATAAAACTTTCTAATATAATCTTTTGTGACGAAAATTAAATTGCACTTGATTTTATAAATACTTGAGTGATACATGAATGTAAAGATAGCGCTAAGAATGCAGGGATTGCATACCAAAACAAAATAAGTACATGGCTAACGTGAAATAACATTTAAATAATAAAAAAAAATGTAGTTTTACCACTCTTAAAAATCAATAGTTTAGCAGAAAAACAGATTAAACATACCATATACCAACGCTCAAGACTTTTGAACACTGGGGTTAGAAAGTTTTGCTATATGCCATTAAAGGCATTTTGACATGTATTAGGAGAAAAACAGATTAAAGAAACCATATTCAAACGATAATAACTTCTGAACACTTGAGGTTAGAAACTTTTGCTATATGCCATTGAAGGCATTTTGACATATATTTTGTCTGAGTACAATACAAAAAAAAACTAATACAAAATACGTAATTTTATTTGTTTAATGTAATATTTAAATATACTACCCGAAATAAAAATACAATCCACATTAGGGGGATACTATCAAAAAGTGTTTGTATTTGCTTAACAGGGGTTCAAAAAACTATACTCCCATCTTTTGTTCAAATTTTTATTATTTAGAAGAACACGTAGCACTTAAGGAATATACACTTTTGGGAAAAATTGAAACTTTATTTATAATACCTATGTCTGAACTCTAGCTAGGATATTTATATAATAAAAAAGCTTTTCTACGAGTTCATGCTTTTTAGTGTATATATGAATACACACTGAACAATAGCACACTCTTTGGCATCGTATTGTACCTTATACATAATTTTAAATGATCCACAAAATATATAAGAGTTTGCATCCAAGTATGTCATCGATGATGGTTTCACAAATTAATAATGAGTATATTAACTAATTATACTGATGCTTAAAATATAGGTTGTTAAAAGCAGACCTATCTGGATGTTTTATCATTAGTAATTAACGTTCGGAAGTTGAAGTCCGACTGTTTCTTAGCGTTGGCAGATTCGGTACATGTAGATACAATGTTCAAAATTGAGTTAATTTTAAATGAGTAAAAGCTTTCTTCCAAAAATATTTAAAAGCTTTTAAAGCAAGTAGAATGCACATTTGGAATTCAGACCTGTATAAAAAGAAATAAACCTGCAAGACATTCTATTTCTAAGTAAAGCAAGAAAGAATGATATAGTCAGTTCCTCTACTATCAGATACTGGGTTCTTAGCTAGAGTAAGTGCGACGGAGATAGAATATATAAAAACAAATAGGAAAAGACATTTCGAGCGCTAACCAGCACAACCTGCTGCCGGCTACATTATTTTAATTTGTAGTCGTTAGGTATAGAACAAATAATAAAGTAAGATATCTTCTGCGAACCAAAGTTGATATACTTTTTAAGTATTTATATATTTGGAAAATTATGTATACTGAATAATAATACTTTATGATTAAAACAACGTAACTAAGACTAATTTTCTATTATTTTTAAATAATTTGTATACTGCTTTAATAGCAACAATAGGATTTCGTCTCCGATTTTTAAATTAAAACCGAGTAACCTCATCAGGCAGATCTCCATAATGAGCTTTAAAAATGGGAGGCCGCAATGCTGCCGGCTATTCTAGCCCCACATTTATCAAAATAAATAGTGGGAGGAAGTACTCGTTATCTAACGCATAAGTTGGTGTAAATGTTTTTTTACATAATAATTTAGCCATTAAGTCCCATTAATCAATATCAAAAGCCGTTAAAATGTCGAATATGTTTTACCTAACAAAGATGCAAAACTGGATACAAGTGATCAGTACTGGTATCAATAACATGTTCGAGGAAGCCAATACTTTGCGCAAATTGTTAAATGTCGTTTCAAAGGAAGGCGATAACTTCAAATTCGGCCAGATAAAATGTTACGGATGTTAAGGGTGTCGCAGAAATAAAAGTATCCGAGACAATGAGACGGGTAGTTTTCTAGACCTAATTCCACGCTAAGTCCGAGAAATGGCCAGCTCAAAAGTGCATAAACGTGAGCTGTGTACATGGCCTCCCAAAATTCAGCAAATCTGATTGCAGAAAACCAATATTTGGACTGCGTAAAAAAGTGATAACGTAATATATTTTTTTGCTATTGTATTGTGTTGTGAGTCGTAGATACTTCGTGGCTACTTTTTATTTTTGGTTTTTATTTATCATTACTTTATTTACAATATTTATACTTAGTCATGTTAATTTAATTATACGATCATTTTCTTTTCATTTGATTTCTTCCTTTCCGAAATTTCCTTGATCGGAAAGGTTTTCAGAATTATTGCAAAATTATTATTCTTTAGAGAATAGGCAGCGTCTCATTAGGCAGGGATTTAGGCTTGGAAGCTATCGATGGTCTAACGAGATATCCAATTTTTCCTCTCTAAGCCAACATCGGTTTTATTTGTCGCTAATGCTACATTTAGCATTTTTCACATCTCTCAAATTAGTACAAACCAAGGCTTTGTTGCAGATTTTTGGGTAGGAAAAATTCAA");
-		str = new String("TCTGAATTTT");
-		SuffixTree tree = new SuffixTree(str, 1, str.length());
+		String str = new String("AAAAAACTTGAAACCCAAGTCGCGCTCTTGAAACCCAAGTGAACGGTTGAAACCCAAGTTACGCCAAGATTGAAACCCAAGTAA");
+		//String str = new String("TCTGAATTTT");
+		SuffixTree tree = new SuffixTree(str);
 		System.out.println("Done!");
 		printTree(tree.root, 0);
 		System.out.println();
 		
-		ArrayList<String> repeats = findRepeats(tree, "TTT");
+		ArrayList<String> repeats = findRepeats(tree, "TTGAAACCCAAGT");
+		//ArrayList<String> repeats = findRepeats(tree, "TTT");
 
-		ArrayList<String> allStrings = new ArrayList<String>();
+		//ArrayList<String> allStrings = new ArrayList<String>();
 
-		allStrings = findAllRepeatsOfLength(tree, 2, 4);
+		//allStrings = findAllRepeatsOfLength(tree, 2, 4);
+		System.out.println("All repeats by sequence: ");
 		for(String repeat : repeats)
 		{
 			System.out.println(repeat);
 		}
 
-		System.out.println("All repeats:");
-		for(String s : allStrings)
-		{
-			System.out.println(s);
-		}
+//		System.out.println("All repeats by size:");
+//		for(String s : allStrings)
+//		{
+//			System.out.println(s);
+//		}
 		
 	}
 	
@@ -50,18 +52,24 @@ public class SuffixTree {
 		this.root = new SuffixTreeNode();
 		int i;
 		
-		for(i = 0; i < word.length(); i++)
+		for(i = this.startPos; i <= this.endPos; i++)
 		{
-			this.addSuffix(this.startPos+i, this.endPos, word.substring(i), i+1);
+			this.addSuffix(i, this.endPos, word.substring(i-1));
 		}
 	}
 	
-	public void addSuffix(int start, int end, String suffix, int position)
+	public void addSuffix(int start, int end, String suffix)
 	{
+		System.out.println("Add Suffix: " + suffix);
 		StringBuilder tempSuffix = new StringBuilder(suffix);
 		SuffixTreeNode node = findPosition(this.root, tempSuffix);
 		int charsRemoved = suffix.length() - tempSuffix.length();
-		this.insertSuffix(start+charsRemoved, end, node, new String(tempSuffix), position);
+		boolean completeIncomingEdgeMatch = false;
+		if(node.incomingEdge != null && charsRemoved >= (node.incomingEdge.labelEndPos - node.incomingEdge.labelStartPos + 1))
+		{
+			completeIncomingEdgeMatch = true;
+		}
+		this.insertSuffix(start+charsRemoved, end, node, new String(tempSuffix), start, completeIncomingEdgeMatch);
 	}
 	
 	//NOTE: Method modifies suffix parameter
@@ -70,20 +78,20 @@ public class SuffixTree {
 		int i;
 		int charsMatched = -1;
 		String label;
+		
 		for(i = 0; i < startNode.children.size(); i++)
 		{
 			label = startNode.children.get(i).incomingEdge.getLabel(word);
 			charsMatched = matchSuffixWithLabel(new String(suffix), label);
 			if(charsMatched == label.length())
-			{
+			{				
 				//Child Node label is a prefix of the target suffix so continue 
 				//traversing tree along this child node path
 				return findPosition(startNode.children.get(i), suffix.delete(0, charsMatched));
 			}
 			else if(charsMatched > 0)
 			{
-				//Child Node label is a partial prefix of the target suffix so continue 
-				//traversing tree along this child node path
+				//Child Node label is a partial prefix of the target suffix so return child node
 				return startNode.children.get(i);
 			}
 		}
@@ -105,9 +113,23 @@ public class SuffixTree {
 		return i;
 	}
 	
-	public void insertSuffix(int start, int end, SuffixTreeNode node, String suffix, int position)
+	public boolean checkForChildPrefixMatches(SuffixTreeNode node, String suffix)
 	{
-		if(node.incomingEdge == null || suffix.startsWith(node.incomingEdge.getLabel(word)) || suffix.charAt(0) != node.incomingEdge.getLabel(word).charAt(0))
+		for(SuffixTreeNode child : node.children)
+		{
+			if(child.incomingEdge.getLabel(word).charAt(0) == suffix.charAt(0))
+			{
+				//Found partial prefix match in child
+				return true;
+			}
+		}
+		//No prefix matches in children
+		return false;
+	}
+	
+	public void insertSuffix(int start, int end, SuffixTreeNode node, String suffix, int position, boolean completeIncomingEdgeMatch)
+	{
+		if(node.incomingEdge == null || completeIncomingEdgeMatch || suffix.charAt(0) != node.incomingEdge.getLabel(word).charAt(0)) 
 		{
 			//Case 1: Only add leaf node
 			SuffixTreeNode leafNode = new SuffixTreeNode(new SuffixTreeEdge(start, end), node);
