@@ -10,7 +10,16 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+
+import net.lingala.zip4j.core.ZipFile;
 
 import model.Gene;
 
@@ -27,6 +36,144 @@ public class DNAUtil {
 	public static double totalT = 0;
 
 	// Static methods again works for me
+
+	public static String calculateZip(String zipPath) throws Exception {
+
+		ZipFile zip = new ZipFile(zipPath);
+		zip.extractAll("~temp");
+		File dir = new File("~temp");
+		File newDir = dir.listFiles()[0];
+
+		File output = new File("results.xls");
+
+		double val1 = 0;
+		double val2 = 0;
+		double val3 = 0;
+		double val4 = 0;
+		double val5 = 0;
+		double val6 = 0;
+		double val7 = 0;
+		double val8 = 0;
+		double val9 = 0;
+		double val10 = 0;
+
+		int i = 0;
+
+		WorkbookSettings wbSettings = new WorkbookSettings();
+		wbSettings.setLocale(new Locale("en", "EN"));
+		WritableWorkbook workbook = Workbook.createWorkbook(output, wbSettings);
+
+		for (File f : newDir.listFiles()) {
+			String result = calculateResults(f.getAbsolutePath());
+			workbook.createSheet(
+					f.getName().substring(0, f.getName().indexOf(".")), i);
+			WritableSheet sheet = workbook.getSheet(i);
+			i++;
+
+			String lines[] = result.split("\n");
+			int row = 0;
+			for (String line : lines) {
+				String vals[] = line.split("\t");
+				int col = 0;
+				for (String s : vals) {
+					String moreVals[] = s.split("\\)");
+					for (String last : moreVals) {
+						if (col == 1) {
+							try {
+								switch (row) {
+								case 1:
+									val1 += Double.valueOf(last);
+									break;
+								case 2:
+									val2 += Double.valueOf(last);
+									break;
+								case 3:
+									val3 += Double.valueOf(last);
+									break;
+								case 4:
+									val4 += Double.valueOf(last);
+									break;
+								case 5:
+									val5 += Double.valueOf(last);
+									break;
+								case 8:
+									val6 += Double.valueOf(last);
+									break;
+								case 9:
+									val7 += Double.valueOf(last);
+									break;
+								case 10:
+									val8 += Double.valueOf(last);
+									break;
+								case 11:
+									val9 += Double.valueOf(last);
+									break;
+								case 12:
+									val10 += Double.valueOf(last);
+									break;
+								default:
+									break;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						sheet.addCell(new Label(col++, row, last));
+					}
+				}
+
+				row++;
+			}
+		}
+
+		workbook.createSheet("Summary", 0);
+		WritableSheet s = workbook.getSheet(0);
+
+		s.addCell(new Label(0, 0, "TOTAL GENE CONTENT"));
+		s.addCell(new Label(1, 1, ""));
+		s.addCell(new Label(1, 2, "TOTAL AVERAGE CDS SPAN"));
+		s.addCell(new Label(0, 2, "" + val1 / i));
+
+		s.addCell(new Label(1, 3, "TOTAL AVERAGE CDS SIZE"));
+		s.addCell(new Label(0, 3, "" + val2 / i));
+
+		s.addCell(new Label(1, 4, "TOTAL AVERAGE EXON SIZE"));
+		s.addCell(new Label(0, 4, "" + val3 / i));
+
+		s.addCell(new Label(1, 5, "TOTAL AVERAGE INTRON SIZE"));
+		s.addCell(new Label(0, 5, "" + val4 / i));
+
+		s.addCell(new Label(1, 6, "TOTAL AVERAGE INTERGENIC REGION SIZE"));
+		s.addCell(new Label(0, 6, "" + val5 / i));
+
+		s.addCell(new Label(1, 7, " "));
+		s.addCell(new Label(0, 8, "TOTAL GENE DENSITY"));
+		s.addCell(new Label(1, 9, "TOTAL NUMBER OF GENES"));
+		s.addCell(new Label(0, 9, "" + val6 / i));
+
+		s.addCell(new Label(1, 10, "TOTAL NUMBER OF GENES 2"));
+		s.addCell(new Label(0, 10, "" + val7 / i));
+
+		s.addCell(new Label(1, 11, "TOTAL CDS SIZE"));
+		s.addCell(new Label(0, 11, "" + val8 / i));
+
+		s.addCell(new Label(1, 12, "TOTAL NUMBER OF GENES PER KBPAIRS"));
+		s.addCell(new Label(0, 12, "" + val9 / i));
+
+		s.addCell(new Label(1, 13, "TOTAL KBPAIRS/NUMBER OF GENES"));
+		s.addCell(new Label(0, 13, "" + val10 / i));
+
+		workbook.write();
+		workbook.close();
+
+		try{
+			delete(dir);
+		} catch(Exception e) {
+			System.err.println("DIRECTORY NOT DELETED");
+		}
+
+		return "RESULTS FILE CREATED (In the same directory as this program)";
+	}
 
 	public static String calculateResults(String filepath) throws Exception {
 
@@ -67,15 +214,15 @@ public class DNAUtil {
 
 		rtn += "\n2. Gene Density:\n";
 
-		rtn += "a) " + df.format(numGenes * (avgCDSSpan/totalT))
+		rtn += "a) "
+				+ df.format(numGenes * (avgCDSSpan / totalT))
 				+ "\tNumber of Genes * (Average CDS Span / total nucleotides)\n";
-		rtn += "b) " + df.format(numGenes * (avgCDSSize/totalT))
+		rtn += "b) "
+				+ df.format(numGenes * (avgCDSSize / totalT))
 				+ "\tNumber of Genes * (Average CDS Size / total nucleotides)\n";
-		rtn += "c) "
-				+ df.format((double) totalCDSActual / totalT)
+		rtn += "c) " + df.format((double) totalCDSActual / totalT)
 				+ "\tTotal CDS Size (combining isoforms) / total nucleotides\n";
-		rtn += "d) "
-				+ df.format((double) numGenes / (totalT / 1000.0))
+		rtn += "d) " + df.format((double) numGenes / (totalT / 1000.0))
 				+ "\tNumber of Genes per KBPairs\n";
 		rtn += "e) " + df.format((totalT / 1000.0) / numGenes)
 				+ "\tKBPairs / Number of Genes \n";
@@ -248,29 +395,29 @@ public class DNAUtil {
 		IntegerPair curVal = cdsRegions.size() > 0 ? cdsRegions.get(0) : null;
 		int cdsMin = curVal != null ? curVal.start : 0;
 		int cdsMax = curVal != null ? curVal.stop : 0;
-		
+
 		Iterator<IntegerPair> iter = cdsRegions.iterator();
 		while (iter.hasNext()) {
 			IntegerPair temp = iter.next();
-			while(temp.start <= curVal.stop && iter.hasNext()) {
-				if(temp.stop > curVal.stop) {
+			while (temp.start <= curVal.stop && iter.hasNext()) {
+				if (temp.stop > curVal.stop) {
 					curVal.stop = temp.stop;
 				}
 				temp = iter.next();
 			}
-			
+
 			totalCDSActual += (curVal.stop - curVal.start) + 1;
-			if(curVal.start < cdsMin) {
+			if (curVal.start < cdsMin) {
 				cdsMin = curVal.start;
 			}
-			if(curVal.stop > cdsMax) {
+			if (curVal.stop > cdsMax) {
 				cdsMax = curVal.stop;
 			}
 			curVal = temp;
 		}
 
 		totalT = cdsMax - cdsMin + 1;
-		
+
 		// Average intergenic region size
 		Collections.sort(mRNAs, new Comparator<Gene>() {
 			@Override
@@ -341,6 +488,45 @@ public class DNAUtil {
 
 		// Finding highest Nucleotide number
 		totalNucleotides = maxEndPos - smallestStartPos + 1;
+	}
+
+	public static void delete(File file) throws Exception {
+
+		if (file.isDirectory()) {
+
+			// directory is empty, then delete it
+			if (file.list().length == 0) {
+
+				file.delete();
+				System.out.println("Directory is deleted : "
+						+ file.getAbsolutePath());
+
+			} else {
+
+				// list all the directory contents
+				String files[] = file.list();
+
+				for (String temp : files) {
+					// construct the file structure
+					File fileDelete = new File(file, temp);
+
+					// recursive delete
+					delete(fileDelete);
+				}
+
+				// check the directory again, if empty then delete it
+				if (file.list().length == 0) {
+					file.delete();
+					System.out.println("Directory is deleted : "
+							+ file.getAbsolutePath());
+				}
+			}
+
+		} else {
+			// if file, then delete it
+			file.delete();
+			System.out.println("File is deleted : " + file.getAbsolutePath());
+		}
 	}
 
 }

@@ -185,7 +185,11 @@ public class DNAApplication extends JFrame {
 			}
 
 			try {
-				resultsField.setText(DNAUtil.calculateResults(filepath));
+				if(filepath.contains(".zip")) {
+					resultsField.setText(DNAUtil.calculateZip(filepath));
+				} else {
+					resultsField.setText(DNAUtil.calculateResults(filepath));
+				}
 			} catch (Exception ex) {
 				JOptionPane.showMessageDialog(null, ex.toString(),
 						"Error while reading file", JOptionPane.ERROR_MESSAGE);
