@@ -41,7 +41,7 @@ public class DNAUtil {
 		return results.toString();
 	}
 
-	private static String doReverseCompliment(String sequence) {
+	public static String doReverseCompliment(String sequence) {
 
 		StringBuilder complimentBuilder = new StringBuilder();
 
@@ -52,7 +52,7 @@ public class DNAUtil {
 		return complimentBuilder.toString();
 	}
 
-	private static char getCompliment(char c) {
+	public static char getCompliment(char c) {
 		switch (c) {
 		case 'U':
 			return 'A';

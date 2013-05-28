@@ -52,6 +52,7 @@ public class SuffixTree {
 				if(q+loopSize < original.length())
 				{
 					extension = getLongestCommonExtension(this.root, original.substring(q+loopSize), rCompliment.substring(n-q));
+					
 					if(extension != null && extension.length() >= minPalindromeSize && extension.length() <= maxPalindromeSize)
 					{
 						int rightWingEnd = (q+loopSize+extension.length() < original.length()) ? q+loopSize+extension.length() : original.length();
@@ -123,14 +124,18 @@ public class SuffixTree {
 //		}
 		
 		//*** TESTING STUFF FOR FINDING PALINDROMES ***
-		String s1 = new String("ATCATACTGAT");
-		String s2 = new String("TAGTCATACTA");
+		String s1 = new String("ATCATTGAGAT");
+		//String s1 = new String("AGCAACAGCTTAGGGTGGACCCGGCGCACTACTATTACACGTTCTATTAT");
+		s1 = new String(s1.replace('T', 'U'));
+		//String s2 = new String("TAGTCATACTA");
+		String s2 = new String(DNAUtil.doReverseCompliment(s1));
 		SuffixTree tree = new SuffixTree(s1, s2);
 		printTree(tree.root, 0);
 		System.out.println();
 		
 		List<PalindromeResult> palindromes = tree.findPalindromes(false, 3, 3, 1, 1);
 		
+		System.out.println("String 1: " + s1 + ", String 2: " + s2);
 		System.out.println("Starting Palindrome Testing: ");
 		for(PalindromeResult pr : palindromes)
 		{
@@ -360,7 +365,8 @@ public class SuffixTree {
 		SuffixTreeNode t1 = node1;
 		SuffixTreeNode t2 = node2;
 		
-		while(t1.incomingEdge != null && t2.incomingEdge != null && t1.compareTo(t2, word) != 0)
+		while(t1.incomingEdge != null && t2.incomingEdge != null && 
+				t1.incomingEdge.labelStartPos == t1.incomingEdge.labelStartPos && t2.incomingEdge.labelEndPos == t2.incomingEdge.labelEndPos)
 		{
 			t1 = t1.parent;
 			t2 = t2.parent;
@@ -380,8 +386,7 @@ public class SuffixTree {
 	
 	//NOTE: Returns null if no prefix of s1 is found
 	public static SuffixTreeNode findNode(SuffixTreeNode start, String s1)
-	{
-		
+	{	
 		SuffixTreeNode node = start;
 		String current = new String();
 		int prevCurrentLength = 0;
@@ -421,13 +426,33 @@ public class SuffixTree {
 	
 	//NOTE: returns null if strings s1 or s2 were not found in tree
 	public static String getLongestCommonExtension(SuffixTreeNode start, String s1, String s2)
-	{
-		SuffixTreeNode n1 = SuffixTree.findNode(start, s1);
-		SuffixTreeNode n2 = SuffixTree.findNode(start, s2);
+	{			
+		char[] s1_arr = s1.toCharArray();
+		char[] s2_arr = s2.toCharArray();
+		int charsMatched = 0;
+		SuffixTreeNode lca = null;
 		
-		if(n1 != null && n2 != null)
+		//Finds Lowest Common Ancestor Node
+		while(charsMatched < s1.length() && charsMatched < s2.length() && s1_arr[charsMatched] == s2_arr[charsMatched])
 		{
-			SuffixTreeNode lca = SuffixTree.findLowestCommonAncestor(n1, n2);
+			charsMatched++;
+		}
+		
+		if(charsMatched == 0)
+		{
+			lca = start;
+		}
+		else
+		{
+			String match = s1.substring(0, charsMatched);
+			lca = findNode(start, match);
+		}
+		
+		
+		//Uses Lowest Common Ancestor Node to get Longest Common Extension
+		if(charsMatched > 0)
+		{
+			
 			String extension = new String();
 			while(lca.incomingEdge != null)
 			{
