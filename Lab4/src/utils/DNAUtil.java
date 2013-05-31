@@ -15,6 +15,8 @@ public class DNAUtil {
 		String gffFilepath = o.gffPath;
 		String fastaFilepath = o.fastaPath;
 		
+		int DEFAULT_MAX_SEQUENCE_SIZE = 25;
+		
 		List<Gene> genes = null;
 		String dnaSequence = null;
 		
@@ -45,7 +47,7 @@ public class DNAUtil {
 			int sizeRange = o.upstreamSize;
 			if(o.bySize) { //Search for repeats of specified size
 				int minSize = o.minSize;
-				int maxSize = o.maxSize < 1 ? dnaSequence.length() : o.maxSize; //Max size the length of the dna sequence... sure				
+				int maxSize = o.maxSize < 1 ? DEFAULT_MAX_SEQUENCE_SIZE : o.maxSize; //Max size the length of the dna sequence... sure				
 				
 				//TODO Iterate over each mRNA stored in genes and search the
 				//upstream area for repeated sequences greater than minSize and
@@ -118,7 +120,7 @@ public class DNAUtil {
 			
 			if(o.bySize) { //Search for repeats of specified size
 				int minSize = o.minSize;
-				int maxSize = o.maxSize < 1 ? dnaSequence.length() : o.maxSize; //Max size the length of the dna sequence... sure
+				int maxSize = o.maxSize < 1 ? DEFAULT_MAX_SEQUENCE_SIZE : o.maxSize; //Max size the length of the dna sequence... sure
 				
 				//TODO use a suffix tree and find all repeated sequences
 				//in the specified range that are greater than min size 
