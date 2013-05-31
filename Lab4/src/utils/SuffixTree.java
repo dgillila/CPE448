@@ -60,7 +60,7 @@ public class SuffixTree {
 	
 	public void addSuffix(int start, int end, String suffix)
 	{
-		System.out.println("Add Suffix: " + suffix);
+//		System.out.println("Add Suffix: " + suffix);
 		StringBuilder tempSuffix = new StringBuilder(suffix);
 		SuffixTreeNode node = findPosition(this.root, tempSuffix);
 		int charsRemoved = suffix.length() - tempSuffix.length();
