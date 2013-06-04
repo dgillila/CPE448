@@ -80,8 +80,8 @@ public class DNAUtil {
 								for(SuffixTreeNode leaf : leaves)
 								{
 									String leafString = SuffixTree.getPathLabel(leaf);
-									int startingPos = dnaSubSequence.length() - leafString.length();
-									results += "Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+repeat.length()) + "\n";
+									int startingPos = dnaSubSequence.length() - leafString.length() + 2;
+									results += "Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+repeat.length()-1) + "\n";
 								}
 								leaves.clear();
 							}
@@ -122,8 +122,8 @@ public class DNAUtil {
 							for(SuffixTreeNode leaf : leaves)
 							{
 								String leafString = SuffixTree.getPathLabel(leaf);
-								int startingPos = dnaSubSequence.length() - leafString.length();
-								results += "Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+label.length()) + "\n";
+								int startingPos = dnaSubSequence.length() - leafString.length() + 2;
+								results += "Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+label.length()-1) + "\n";
 							}
 							leaves.clear();
 						}
@@ -150,20 +150,20 @@ public class DNAUtil {
 				ArrayList<SuffixTreeNode> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);
 		     	
 				ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
-				int c = 1;
+				//int c = 1;
 				for(SuffixTreeNode node : repeats)
 				{
 					String repeat = SuffixTree.getPathLabel(node);
 					SuffixTree.getLeafNodesFromNode(node, leaves);
-					int count = 1;
+					//int count = 1;
 					for(SuffixTreeNode leaf : leaves)
 					{
 						//System.out.println("Repeats: " + repeats.size() + ", Count: " + c + ", Leaves: " + leaves.size() + ", Count: " + count++);
 						String leafString = SuffixTree.getPathLabel(leaf);
-						int startingPos = dnaSubSequence.length() - leafString.length();
-						results += "Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+repeat.length()) + "\n";
+						int startingPos = dnaSubSequence.length() - leafString.length() + 2;
+						results += "Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+repeat.length()-1) + "\n";
 					}
-					c++;
+					//c++;
 					leaves.clear();
 				}
 				
@@ -173,19 +173,19 @@ public class DNAUtil {
 				//use a suffix tree and find all repeated sequences
 				//in the specified range that are the same as the searchPattern string
 				String dnaSubSequence = dnaSequence.substring(startPosition-1, stopPosition);
-				System.out.println("DNA sequence: " + dnaSequence);
 				SuffixTree tree = new SuffixTree(dnaSubSequence);
 				System.out.println("after suffix tree");
 				SuffixTreeNode repeatNode = SuffixTree.findRepeats(tree, searchPattern);
 
 				ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
 				String label = SuffixTree.getPathLabel(repeatNode);
+				System.out.println("Label: " + label.length());
 				SuffixTree.getLeafNodesFromNode(repeatNode, leaves);
 				for(SuffixTreeNode leaf : leaves)
 				{
 					String leafString = SuffixTree.getPathLabel(leaf);
-					int startingPos = dnaSubSequence.length() - leafString.length();
-					results += "Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+label.length()) + "\n";
+					int startingPos = dnaSubSequence.length() - leafString.length() + 2;
+					results += "Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+label.length()-1) + "\n";
 				}
 				leaves.clear();
 			}

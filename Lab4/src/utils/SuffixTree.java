@@ -21,8 +21,8 @@ public class SuffixTree {
 	
 	public static void main(String[] args)
 	{
-		//String str = new String("AAAAAACTTGAAACCCAAGTCGCGCTCTTGAAACCCAAGTGAACGGTTGAAACCCAAGTTACGCCAAGATTGAAACCCAAGTAA");
-		String str = new String("TCTGAATTTT");
+		String str = new String("AAAAAACTTGAAACCCAAGTCGCGCTCTTGAAACCCAAGTGAACGGTTGAAACCCAAGTTACGCCAAGATTGAAACCCAAGTAA");
+		//String str = new String("TCTGAATTTT");
 		SuffixTree tree = new SuffixTree(str);
 		System.out.println("Done!");
 		printTree(tree.root, 0);
@@ -30,33 +30,33 @@ public class SuffixTree {
 		
 		ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
 
-		//ArrayList<StringBuilder> repeats = findRepeats(tree, "TTGAAACCCAAGT");
-		SuffixTreeNode repeatNode = findRepeats(tree, "TTT");
+		SuffixTreeNode repeatNode = findRepeats(tree, "TTGAAACCCAAGT");
+		//SuffixTreeNode repeatNode = findRepeats(tree, "TTT");
 		System.out.println("All repeats by sequence: ");
 		String label = getPathLabel(repeatNode);
 		getLeafNodesFromNode(repeatNode, leaves);
 		for(SuffixTreeNode leaf : leaves)
 		{
 			String leafString = getPathLabel(leaf);
-			int startingPos = (word.length()-1) - leafString.length();
-			System.out.println("Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position: " + startingPos + ", Ending Position: " + (startingPos+label.length()));
+			int startingPos = (word.length()-1) - leafString.length() + 2;
+			System.out.println("Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position: " + startingPos + ", Ending Position: " + (startingPos+label.length()-1));
 		}
 		leaves.clear();
 
-		ArrayList<SuffixTreeNode> allStringNodes = findAllRepeatsOfLength(tree, 2, 4);
-		System.out.println("All repeats by size:");
-		for(SuffixTreeNode node : allStringNodes)
-		{
-			String repeat = getPathLabel(node);
-			getLeafNodesFromNode(node, leaves);
-			for(SuffixTreeNode leaf : leaves)
-			{
-				String leafString = getPathLabel(leaf);
-				int startingPos = (word.length()-1) - leafString.length();
-				System.out.println("Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position: " + startingPos + ", Ending Position: " + (startingPos+repeat.length()));
-			}
-			leaves.clear();
-		}
+//		ArrayList<SuffixTreeNode> allStringNodes = findAllRepeatsOfLength(tree, 2, 4);
+//		System.out.println("All repeats by size:");
+//		for(SuffixTreeNode node : allStringNodes)
+//		{
+//			String repeat = getPathLabel(node);
+//			getLeafNodesFromNode(node, leaves);
+//			for(SuffixTreeNode leaf : leaves)
+//			{
+//				String leafString = getPathLabel(leaf);
+//				int startingPos = (word.length()-1) - leafString.length() + 2;
+//				System.out.println("Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position: " + startingPos + ", Ending Position: " + (startingPos+repeat.length()-1));
+//			}
+//			leaves.clear();
+//		}
 		
 	}
 	
