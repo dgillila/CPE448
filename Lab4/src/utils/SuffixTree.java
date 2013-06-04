@@ -2,6 +2,7 @@ package utils;
 
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class SuffixTree {
 
@@ -20,30 +21,42 @@ public class SuffixTree {
 	
 	public static void main(String[] args)
 	{
-		String str = new String("AAAAAACTTGAAACCCAAGTCGCGCTCTTGAAACCCAAGTGAACGGTTGAAACCCAAGTTACGCCAAGATTGAAACCCAAGTAA");
-		//String str = new String("TCTGAATTTT");
+		//String str = new String("AAAAAACTTGAAACCCAAGTCGCGCTCTTGAAACCCAAGTGAACGGTTGAAACCCAAGTTACGCCAAGATTGAAACCCAAGTAA");
+		String str = new String("TCTGAATTTT");
 		SuffixTree tree = new SuffixTree(str);
 		System.out.println("Done!");
 		printTree(tree.root, 0);
 		System.out.println();
 		
-		ArrayList<String> repeats = findRepeats(tree, "TTGAAACCCAAGT");
-		//ArrayList<String> repeats = findRepeats(tree, "TTT");
+		ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
 
-		//ArrayList<String> allStrings = new ArrayList<String>();
-
-		//allStrings = findAllRepeatsOfLength(tree, 2, 4);
+		//ArrayList<StringBuilder> repeats = findRepeats(tree, "TTGAAACCCAAGT");
+		SuffixTreeNode repeatNode = findRepeats(tree, "TTT");
 		System.out.println("All repeats by sequence: ");
-		for(String repeat : repeats)
+		String label = getPathLabel(repeatNode);
+		getLeafNodesFromNode(repeatNode, leaves);
+		for(SuffixTreeNode leaf : leaves)
 		{
-			System.out.println(repeat);
+			String leafString = getPathLabel(leaf);
+			int startingPos = (word.length()-1) - leafString.length();
+			System.out.println("Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position: " + startingPos + ", Ending Position: " + (startingPos+label.length()));
 		}
+		leaves.clear();
 
-//		System.out.println("All repeats by size:");
-//		for(String s : allStrings)
-//		{
-//			System.out.println(s);
-//		}
+		ArrayList<SuffixTreeNode> allStringNodes = findAllRepeatsOfLength(tree, 2, 4);
+		System.out.println("All repeats by size:");
+		for(SuffixTreeNode node : allStringNodes)
+		{
+			String repeat = getPathLabel(node);
+			getLeafNodesFromNode(node, leaves);
+			for(SuffixTreeNode leaf : leaves)
+			{
+				String leafString = getPathLabel(leaf);
+				int startingPos = (word.length()-1) - leafString.length();
+				System.out.println("Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position: " + startingPos + ", Ending Position: " + (startingPos+repeat.length()));
+			}
+			leaves.clear();
+		}
 		
 	}
 	
@@ -175,68 +188,132 @@ public class SuffixTree {
 		}
 	}
 	
-	public static ArrayList<String> findRepeats(SuffixTree tree, String target)
+	public static SuffixTreeNode findRepeats(SuffixTree tree, String target)
 	{
-		ArrayList<String> repeats = new ArrayList<String>();
-		getRepeatsUsingTarget(tree.root, repeats, target, "");
-		return repeats;
+		SuffixTreeNode repeat = getRepeatsUsingTarget(tree.root, target);
+		return repeat;
 		
 	}
 
-     public static ArrayList<String> findAllRepeatsOfLength(SuffixTree tree, int min, int max)
+     public static ArrayList<SuffixTreeNode> findAllRepeatsOfLength(SuffixTree tree, int min, int max)
      {
-     	ArrayList<String> repeats = new ArrayList<String>();
      	ArrayList<SuffixTreeNode> internalNodes = new ArrayList<SuffixTreeNode>();
-     	ArrayList<String> fullInternalNodeLabels = new ArrayList<String>();
+     	//ArrayList<StringBuilder> fullInternalNodeLabels = new ArrayList<StringBuilder>();
      	
-     	getAllInternalNodesOfLength(tree.root, internalNodes, fullInternalNodeLabels, "", min, max);
+     	getAllInternalNodesOfLength(tree.root, internalNodes, new String(), min, max);
      	
-     	int i;
-     	for(i = 0; i < internalNodes.size() && i < fullInternalNodeLabels.size(); i++)
-     	{
-     		getLeafStringsFromNode(internalNodes.get(i), fullInternalNodeLabels.get(i), repeats);
-     	}
+		return internalNodes;
+     }
+     
+     public static String getPathLabel(SuffixTreeNode start)
+     {
+    	 String current = new String();
+    	 SuffixTreeNode node = start;
+    	 
+    	 while(node.incomingEdge != null)
+    	 {
+    		 current = node.incomingEdge.getLabel(word) + current;
+    		 node = node.parent;
+    	 }
+    	 return current;
+     }
+     
+     public static SuffixTreeNode getRepeatsUsingTarget(SuffixTreeNode start, String target)
+ 	{
+ 		SuffixTreeNode node = start;
+ 		String current = new String();
+ 		boolean foundNewNode = false;
+ 		
+ 		while(node.children.size() > 0)
+ 		{
+ 			if(current.equals(target) || current.startsWith(target))
+ 			{
+ 				return node;
+ 			}
+ 			else
+ 			{
+ 				for(SuffixTreeNode child : node.children)
+ 				{
+ 					String temp = current + child.incomingEdge.getLabel(word);
+ 					if(target.startsWith(temp))
+ 					{
+ 						node = child;
+ 						current += child.incomingEdge.getLabel(word);
+ 						foundNewNode = true;
+ 					}
+ 				}
+ 			}
+ 			
+ 			if(!foundNewNode)
+ 			{
+ 				//Went through all children and did not find a path to go down for repeat
+ 				break;
+ 			}
+ 			foundNewNode = false;
+ 		}
+ 		return null;
+ 	}
+     
+ 	public static void getAllInternalNodesOfLength(SuffixTreeNode start, ArrayList<SuffixTreeNode> nodes, String current, int min, int max)
+ 	{ 		
+ 		if(current.length() >= min && current.length() <= max && start.children.size() > 0)
+ 		{
+ 			nodes.add(start);
+ 		}
+ 		else if(current.length() != 0 && current.charAt(current.length()-1) == '$' && current.length() == max+1 && start.children.size() > 0)
+ 		{
+ 			nodes.add(start);
+ 		}
+ 		
+ 		if(current.length() <= max)
+ 		{
+ 			for(SuffixTreeNode child : start.children)
+ 			{
+ 				getAllInternalNodesOfLength(child, nodes, current+child.incomingEdge.getLabel(word), min, max);
+ 			}
+ 		}
+ 	}
+	
+ 	
+ 	public static void getLeafNodesFromNode(SuffixTreeNode start, ArrayList<SuffixTreeNode> leaves)
+ 	{
+ 		LinkedList<SuffixTreeNode> nodeList = new LinkedList<SuffixTreeNode>();
 
-		return repeats;
-     }			     
-	
-	public static void getRepeatsUsingTarget(SuffixTreeNode start, ArrayList<String> repeats, String target, String current)
-	{
-		if(start.children.size() == 0 && current.startsWith(target))
-		{
-			//Leaf Node
-			repeats.add(current);
-		}
-		else if(current.length() == 0 || target.startsWith(current))
-		{
-			//Root Node or Path label is prefix of target string
-			for(SuffixTreeNode child : start.children)
-			{
-				
-				getRepeatsUsingTarget(child, repeats, target, current+child.incomingEdge.getLabel(word));
-			}
-		}
-		
-	}
-	
-	public static void getAllInternalNodesOfLength(SuffixTreeNode start, ArrayList<SuffixTreeNode> nodes, ArrayList<String> nodeLabels, String current, int min, int max)
-	{
-		if(current.length() >= min && current.length() <= max && start.children.size() > 0)
-		{
-			nodes.add(start);
-			nodeLabels.add(current);
-		}
-		else if(current.length() <= max)
-		{
-			for(SuffixTreeNode child : start.children)
-			{
-				getAllInternalNodesOfLength(child, nodes, nodeLabels, current+child.incomingEdge.getLabel(word), min, max);
-			}
-		}
-	}
-	
+ 		nodeList.push(start);
+ 		while(!nodeList.isEmpty())
+ 		{
+ 			SuffixTreeNode temp = nodeList.pop();
+ 			if(temp.children.size() > 0)
+ 			{
+ 				for(SuffixTreeNode node : temp.children)
+ 				{
+ 					nodeList.push(node);
+ 				}
+ 			}
+ 			else
+ 			{
+ 				leaves.add(temp);
+ 			}
+ 		}
+ 	}
+ 	
 	public static void getLeafStringsFromNode(SuffixTreeNode start, String currentLabel, ArrayList<String> repeats)
 	{
+		LinkedList<SuffixTreeNode> nodeList = new LinkedList<SuffixTreeNode>();
+		
+		nodeList.push(start);
+		while(!nodeList.isEmpty())
+		{
+			SuffixTreeNode temp = nodeList.pop();
+			if(temp.children.size() > 0)
+			{
+				for(SuffixTreeNode node: temp.children)
+				{
+					nodeList.push(node);
+				}
+			}
+		}
+		
 		if(start.children.size() == 0)
 		{
 			repeats.add(currentLabel);
@@ -274,6 +351,5 @@ public class SuffixTree {
 			printTree(start.children.get(i), depth+1);
 		}
 	}
-
     
 }

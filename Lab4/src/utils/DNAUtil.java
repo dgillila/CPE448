@@ -69,11 +69,21 @@ public class DNAUtil {
 								dnaSubSequence = new StringBuffer(dnaSequence.substring(iso.getStart()+1, iso.getStart()+1+sizeRange)).reverse();
 							}
 							SuffixTree tree = new SuffixTree(dnaSubSequence.toString());
-							ArrayList<String> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);
-
-							for(int i = 0; i < repeats.size(); i++) 
+							System.out.println("after suffix tree");
+							ArrayList<SuffixTreeNode> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);							
+							
+							ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
+							for(SuffixTreeNode node : repeats)
 							{
-								results += (i+1) + ": " + repeats.get(i).substring(0, repeats.get(i).length()-1) + " \n";
+								String repeat = SuffixTree.getPathLabel(node);
+								SuffixTree.getLeafNodesFromNode(node, leaves);
+								for(SuffixTreeNode leaf : leaves)
+								{
+									String leafString = SuffixTree.getPathLabel(leaf);
+									int startingPos = dnaSubSequence.length() - leafString.length();
+									results += "Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+repeat.length()) + "\n";
+								}
+								leaves.clear();
 							}
 						}
 					}
@@ -103,11 +113,19 @@ public class DNAUtil {
 								dnaSubSequence = new StringBuffer(dnaSequence.substring(iso.getStart()+1, iso.getStart()+1+sizeRange)).reverse();
 							}
 							SuffixTree tree = new SuffixTree(dnaSubSequence.toString());
-							ArrayList<String> repeats = SuffixTree.findRepeats(tree, searchPattern);
-
-							for(int i = 0; i < repeats.size(); i++) {
-								results += (i+1) + ": " + repeats.get(i).substring(0, repeats.get(i).length()-1) + " \n";
+							System.out.println("after suffix tree");
+							SuffixTreeNode repeatNode = SuffixTree.findRepeats(tree, searchPattern);
+							
+							ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
+							String label = SuffixTree.getPathLabel(repeatNode);
+							SuffixTree.getLeafNodesFromNode(repeatNode, leaves);
+							for(SuffixTreeNode leaf : leaves)
+							{
+								String leafString = SuffixTree.getPathLabel(leaf);
+								int startingPos = dnaSubSequence.length() - leafString.length();
+								results += "Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+label.length()) + "\n";
 							}
+							leaves.clear();
 						}
 					}
 				}
@@ -127,13 +145,27 @@ public class DNAUtil {
 				//and less than maxSize. Range is specified by startPosition and stopPosition
 				String dnaSubSequence = dnaSequence.substring(startPosition-1, stopPosition);
 				SuffixTree tree = new SuffixTree(dnaSubSequence);
-
-				ArrayList<String> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);
-
-				for(int i = 0; i < repeats.size(); i++) 
+				System.out.println("after suffix tree");
+				System.out.println("Min: " + minSize + ", Max: " + maxSize);
+				ArrayList<SuffixTreeNode> repeats = SuffixTree.findAllRepeatsOfLength(tree, minSize, maxSize);
+		     	
+				ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
+				int c = 1;
+				for(SuffixTreeNode node : repeats)
 				{
-					results += (i+1) + ": " + repeats.get(i).substring(0, repeats.get(i).length()-1) + " \n";
-                }
+					String repeat = SuffixTree.getPathLabel(node);
+					SuffixTree.getLeafNodesFromNode(node, leaves);
+					int count = 1;
+					for(SuffixTreeNode leaf : leaves)
+					{
+						//System.out.println("Repeats: " + repeats.size() + ", Count: " + c + ", Leaves: " + leaves.size() + ", Count: " + count++);
+						String leafString = SuffixTree.getPathLabel(leaf);
+						int startingPos = dnaSubSequence.length() - leafString.length();
+						results += "Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+repeat.length()) + "\n";
+					}
+					c++;
+					leaves.clear();
+				}
 				
 			} else { //Search for repeats by specific string
 				String searchPattern = o.sequence;
@@ -144,11 +176,18 @@ public class DNAUtil {
 				System.out.println("DNA sequence: " + dnaSequence);
 				SuffixTree tree = new SuffixTree(dnaSubSequence);
 				System.out.println("after suffix tree");
-				ArrayList<String> repeats = SuffixTree.findRepeats(tree, searchPattern);
+				SuffixTreeNode repeatNode = SuffixTree.findRepeats(tree, searchPattern);
 
-				for(int i = 0; i < repeats.size(); i++) {
-					results += (i+1) + ": " + repeats.get(i).substring(0, repeats.get(i).length()-1) + " \n";
+				ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
+				String label = SuffixTree.getPathLabel(repeatNode);
+				SuffixTree.getLeafNodesFromNode(repeatNode, leaves);
+				for(SuffixTreeNode leaf : leaves)
+				{
+					String leafString = SuffixTree.getPathLabel(leaf);
+					int startingPos = dnaSubSequence.length() - leafString.length();
+					results += "Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+label.length()) + "\n";
 				}
+				leaves.clear();
 			}
 		}
 		
