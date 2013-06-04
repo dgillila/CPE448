@@ -6,7 +6,12 @@ import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
+import model.CDS;
+import model.GFF;
+import model.Gene;
+import model.Isoform;
 import net.lingala.zip4j.core.ZipFile;
 
 public class DNAConcat {
@@ -32,30 +37,52 @@ public class DNAConcat {
 		File resultDir = new File("results");
 		resultDir.mkdir();
 		
-		File supercontig;
-		File superGFF;
-		
 		int supernumber = 1;
 		
 		String currentFASTA = "";
+		GFF currentGFF = new GFF();
 		
 		File fastaFiles[] = fastaDir.listFiles();
+		File gffFiles[] = gffDir.listFiles();
 		
 		sortFiles(fastaFiles);
+		sortFiles(gffFiles);
 		
 		if(fastaFiles.length > 0) {
 			currentFASTA = DNAFileReader.readFASTA(fastaFiles[0].getAbsolutePath());
+			currentGFF.genes = DNAFileReader.readGFF(gffFiles[0].getAbsolutePath());
+		} else {
+			return "Specified directory is empty";
 		}
 		
 		for(int i = 1; i < fastaFiles.length - 1; i++) {
 			File f = fastaFiles[i];
 			String toAppend = DNAFileReader.readFASTA(f.getAbsolutePath());
+			File g = gffFiles[i];
+			List<Gene> toAppendGFF = DNAFileReader.readGFF(g.getAbsolutePath());
+			
+			int contigLength = currentFASTA.length();
 			
 			int overlap = mergeStrings(new StringBuilder(currentFASTA), new StringBuilder(toAppend));
+
+			if(overlap > 0) {
+				//play with the GFF's and fix them up
+				for(Gene gene : toAppendGFF) {
+					for(Isoform isoform : gene.getIsoforms()) {
+						isoform.setStart(contigLength + isoform.getStart() - overlap);
+						isoform.setStop(contigLength + isoform.getStop() - overlap);
+						for(CDS cds : isoform.getCDSRegions()) {
+							cds.setStart(contigLength + cds.getStart() - overlap);
+							cds.setStop(contigLength + cds.getStop() - overlap);
+						}
+					}
+					
+					//TODO do a comparison of gene names (and locations) to see if we've already got it
+					currentGFF.genes.add(gene);
+				}
+			}
 			
-			//TODO play with the GFF's and fix them up
-			
-			if(overlap < 0) {
+			if(overlap <= 0) {
 				//Write the supercontig
 				File fastaToWrite = new File("results/" + SUPER_CONTIG + "" + supernumber + ".fasta");
 				fastaToWrite.createNewFile();
@@ -63,12 +90,22 @@ public class DNAConcat {
 				BufferedWriter writer = new BufferedWriter(fw);
 
 				writer.write(currentFASTA);
+//				fw.close();
+//				writer.close();
 				
 				//Write the superGFF
+				File gffToWrite = new File("results/" + SUPER_GFF + "" + supernumber + ".gff");
+				gffToWrite.createNewFile();
+				fw = new FileWriter(gffToWrite.getAbsoluteFile());
+				writer = new BufferedWriter(fw);
 				
-				writer.close();
+				writer.write(currentGFF.writeGFF());
+				
+//				fw.close();
+//				writer.close();
 				supernumber++;
 				currentFASTA = toAppend;
+				currentGFF.genes = toAppendGFF;
 			}
 			
 		}
