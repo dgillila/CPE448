@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -64,6 +63,7 @@ public class DNAConcat {
 			int contigLength = currentFASTA.length();
 			
 			int overlap = mergeStrings(new StringBuilder(currentFASTA), new StringBuilder(toAppend));
+			System.out.println("Overlap: " + overlap);
 
 			if(overlap > 0) {
 				//play with the GFF's and fix them up
@@ -113,7 +113,7 @@ public class DNAConcat {
 		deleteTempDir(fastaDir);
 		deleteTempDir(gffDir);
 		
-		return null;
+		return "Complete";
 	}
 	
 	/**
@@ -269,7 +269,4 @@ public class DNAConcat {
 			file.delete();
 		}
 	}
-	
-	//Start at one again for the new GFF and Supercontig when a gap is found
-	
 }

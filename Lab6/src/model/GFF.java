@@ -36,6 +36,7 @@ public class GFF {
 		line.append(toWrite.stop + "\t");
 		line.append("." + "\t");
 		line.append((toWrite.forwardStrand ? "+" : "-") + "\t");
+		line.append("." + "\t");
 		
 		for(String attr : toWrite.attributes.keySet()) {
 			line.append(attr + " \"" + toWrite.attributes.get(attr) + "\"; ");

@@ -64,11 +64,11 @@ public class DNAFileReader {
 					}
 
 					// Update length with + or - 3
-					if (g.isForwardStrand()) {
-						g.setStop(g.getStop() + 3);
-					} else {
-						g.setStart(g.getStart() - 3);
-					}
+//					if (g.isForwardStrand()) {
+//						g.setStop(g.getStop() + 3);
+//					} else {
+//						g.setStart(g.getStart() - 3);
+//					}
 
 					Gene temp = new Gene();
 					temp.setName(geneName);
