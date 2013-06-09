@@ -42,7 +42,8 @@ public class DNAConcat {
 		
 		int supernumber = 1;
 		
-		String currentFASTA = "";
+		StringBuilder currentFASTA = new StringBuilder();
+//		String currentFASTA = "";
 		GFF currentGFF = new GFF();
 		
 		File fastaFiles[] = fastaDir.listFiles();
@@ -52,7 +53,7 @@ public class DNAConcat {
 		sortFiles(gffFiles);
 		
 		if(fastaFiles.length > 0) {
-			currentFASTA = DNAFileReader.readFASTA(fastaFiles[0].getAbsolutePath());
+			currentFASTA.append(DNAFileReader.readFASTA(fastaFiles[0].getAbsolutePath()));
 			currentGFF.genes = DNAFileReader.readGFF(gffFiles[0].getAbsolutePath());
 		} else {
 			return "Specified directory is empty";
@@ -67,7 +68,7 @@ public class DNAConcat {
 			int contigLength = currentFASTA.length();
 			
 			int overlap = mergeStrings(new StringBuilder(currentFASTA), new StringBuilder(toAppend));
-			System.out.println("Overlap: " + overlap);
+//			System.out.println("Overlap: " + overlap);
 
 			if(overlap > 0) {
 				//play with the GFF's and fix them up
@@ -81,11 +82,10 @@ public class DNAConcat {
 						}
 					}
 					
-					//TODO do a comparison of gene names (and locations) to see if we've already got it
 					if(!geneMatch(gene, currentGFF.genes)) {
 						currentGFF.genes.add(gene);
 					} else {
-						System.out.println("GENE MATCH");
+//						System.out.println("GENE MATCH");
 					}
 				}
 			}
@@ -97,9 +97,17 @@ public class DNAConcat {
 				FileWriter fw = new FileWriter(fastaToWrite.getAbsoluteFile());
 				BufferedWriter writer = new BufferedWriter(fw);
 
-				writer.write(currentFASTA);
-//				fw.close();
-//				writer.close();
+				writer.write(currentFASTA.toString());
+				writer.close();
+				
+				for(int frameNum = 1; frameNum <= 6; frameNum++) {
+					File frameToWrite = new File("results/" + SUPER_CONTIG + "" + supernumber + "_frame" + frameNum + ".protein");
+					frameToWrite.createNewFile();
+					fw = new FileWriter(frameToWrite.getAbsoluteFile());
+					writer = new BufferedWriter(fw);
+					writer.write(translate(currentFASTA, frameNum).toString());
+					writer.close();
+				}
 				
 				//Write the superGFF
 				File gffToWrite = new File("results/" + SUPER_GFF + "" + supernumber + ".gff");
@@ -108,11 +116,10 @@ public class DNAConcat {
 				writer = new BufferedWriter(fw);
 				
 				writer.write(currentGFF.writeGFF());
+				writer.close();
 				
-//				fw.close();
-//				writer.close();
 				supernumber++;
-				currentFASTA = toAppend;
+				currentFASTA = new StringBuilder(toAppend);
 				currentGFF.genes = toAppendGFF;
 			}
 			
@@ -181,7 +188,6 @@ public class DNAConcat {
 			return rtn;
 		case 4:
 			reverseDNA = doReverseCompliment(dna);
-			System.out.println(reverseDNA.toString());
 			return translateHelper(reverseDNA);
 		case 5:
 			reverseDNA = doReverseCompliment(dna);
@@ -221,7 +227,12 @@ public class DNAConcat {
 		
 		for(int i = 1; i < dna.length()+1; i++) {
 			if(i % 3 == 0) {
-				rtn.append(protienMap.get(dna.substring(i-3, i)));
+				
+				if(protienMap.get(dna.substring(i-3, i)) == null) {
+//					System.out.println(dna.substring(i-3, i));
+				} else {
+					rtn.append(protienMap.get(dna.substring(i-3, i)));	
+				}
 			}
 		}
 		

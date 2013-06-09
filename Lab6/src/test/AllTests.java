@@ -33,7 +33,7 @@ public class AllTests {
 	@Test
 	public void testApplication() {
 		try {
-//			DNAConcat.processFiles("C:\\Users\\Daniel\\Documents\\D_erecta_2nd_3L_control_fasta1.zip", "C:\\Users\\Daniel\\Documents\\D_erecta_2nd_3L_control_gff1.zip");
+			DNAConcat.processFiles("C:\\Users\\Daniel\\Documents\\D_erecta_2nd_3L_control_fasta1.zip", "C:\\Users\\Daniel\\Documents\\D_erecta_2nd_3L_control_gff1.zip");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
