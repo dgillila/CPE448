@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.CDS;
 import model.GFF;
@@ -20,6 +22,8 @@ public class DNAConcat {
 	
 	private static String SUPER_CONTIG = "supercontig";
 	private static String SUPER_GFF = "supergff";
+	
+	private static Map<String, String> protienMap = new HashMap<String, String>();
 	
 	/**
 	 * Does the main processing of the files
@@ -149,6 +153,172 @@ public class DNAConcat {
 		}
 		
 		return i == a.size();
+	}
+	
+	public static StringBuilder translate(StringBuilder dna, int frame) {
+		
+		char a, b;
+		StringBuilder rtn;
+		StringBuilder reverseDNA;
+		
+		switch (frame) {
+		case 1:
+			return translateHelper(dna);
+		case 2:
+			a = dna.charAt(0);
+			dna.deleteCharAt(0);
+			rtn = translateHelper(dna);
+			dna.insert(0, a);
+			return rtn;
+		case 3:
+			a = dna.charAt(0);
+			dna.deleteCharAt(0);
+			b = dna.charAt(0);
+			dna.deleteCharAt(0);
+			rtn = translateHelper(dna);
+			dna.insert(0, b);
+			dna.insert(0, a);
+			return rtn;
+		case 4:
+			reverseDNA = doReverseCompliment(dna);
+			System.out.println(reverseDNA.toString());
+			return translateHelper(reverseDNA);
+		case 5:
+			reverseDNA = doReverseCompliment(dna);
+			a = reverseDNA.charAt(0);
+			reverseDNA.deleteCharAt(0);
+			rtn = translateHelper(reverseDNA);
+			reverseDNA.insert(0, a);
+			return rtn;
+		case 6:
+			reverseDNA = doReverseCompliment(dna);
+			a = reverseDNA.charAt(0);
+			reverseDNA.deleteCharAt(0);
+			b = reverseDNA.charAt(0);
+			reverseDNA.deleteCharAt(0);
+			rtn = translateHelper(reverseDNA);
+			reverseDNA.insert(0, b);
+			reverseDNA.insert(0, a);
+			return rtn;
+		}
+		
+		return translateHelper(dna);
+	}
+	
+	
+	/**
+	 * Translates dna strands to protiens
+	 * 
+	 * @param dna
+	 * @return
+	 */
+	public static StringBuilder translateHelper(StringBuilder dna) {
+		StringBuilder rtn = new StringBuilder();
+		
+		if(protienMap.get("CTG") == null) {
+			initProtienMap();
+		}
+		
+		for(int i = 1; i < dna.length()+1; i++) {
+			if(i % 3 == 0) {
+				rtn.append(protienMap.get(dna.substring(i-3, i)));
+			}
+		}
+		
+		return rtn;
+	}
+	
+	public static StringBuilder doReverseCompliment(StringBuilder sequence) {
+
+		StringBuilder complimentBuilder = new StringBuilder();
+
+		for (int i = sequence.length()-1; i >= 0; i--) {
+			complimentBuilder.append(getCompliment(sequence.charAt(i)));
+		}
+
+		return complimentBuilder;
+	}
+	
+	public static char getCompliment(char c) {
+		switch (c) {
+		case 'T':
+			return 'A';
+		case 'A':
+			return 'T';
+		case 'G':
+			return 'C';
+		case 'C':
+			return 'G';
+		}
+		return 'N';
+	}
+	
+	
+	public static void initProtienMap() {
+		protienMap.put("TTT", "F");
+		protienMap.put("TTC", "F");
+		protienMap.put("TTA", "L");
+		protienMap.put("TTG", "L");
+		protienMap.put("TCT", "S");
+		protienMap.put("TCC", "S");
+		protienMap.put("TCA", "S");
+		protienMap.put("TCG", "S");
+		protienMap.put("TAT", "Y");
+		protienMap.put("TAC", "Y");
+		protienMap.put("TAA", "#");
+		protienMap.put("TAG", "#");
+		protienMap.put("TGT", "C");
+		protienMap.put("TGC", "C");
+		protienMap.put("TGA", "#");
+		protienMap.put("TGG", "W");
+		protienMap.put("CTT", "L");
+		protienMap.put("CTC", "L");
+		protienMap.put("CTA", "L");
+		protienMap.put("CTG", "L");
+		protienMap.put("CCT", "P");
+		protienMap.put("CCC", "P");
+		protienMap.put("CCA", "P");
+		protienMap.put("CCG", "P");
+		protienMap.put("CAT", "H");
+		protienMap.put("CAC", "H");
+		protienMap.put("CAA", "Q");
+		protienMap.put("CAG", "Q");
+		protienMap.put("CGT", "R");
+		protienMap.put("CGC", "R");
+		protienMap.put("CGA", "R");
+		protienMap.put("CGG", "R");
+		protienMap.put("ATT", "I");
+		protienMap.put("ATC", "I");
+		protienMap.put("ATA", "I");
+		protienMap.put("ATG", "M");
+		protienMap.put("ACT", "T");
+		protienMap.put("ACC", "T");
+		protienMap.put("ACA", "T");
+		protienMap.put("ACG", "T");
+		protienMap.put("AAT", "N");
+		protienMap.put("AAC", "N");
+		protienMap.put("AAA", "K");
+		protienMap.put("AAG", "K");
+		protienMap.put("AGT", "S");
+		protienMap.put("AGC", "S");
+		protienMap.put("AGA", "R");
+		protienMap.put("AGG", "R");
+		protienMap.put("GTT", "V");
+		protienMap.put("GTC", "V");
+		protienMap.put("GTA", "V");
+		protienMap.put("GTG", "V");
+		protienMap.put("GCT", "A");
+		protienMap.put("GCC", "A");
+		protienMap.put("GCA", "A");
+		protienMap.put("GCG", "A");
+		protienMap.put("GAT", "D");
+		protienMap.put("GAC", "D");
+		protienMap.put("GAA", "E");
+		protienMap.put("GAG", "E");
+		protienMap.put("GGT", "G");
+		protienMap.put("GGC", "G");
+		protienMap.put("GGA", "G");
+		protienMap.put("GGG", "G");
 	}
 	
 	/**

@@ -39,6 +39,18 @@ public class AllTests {
 		}
 	}
 	
+	@Test
+	public void testTranslator() {
+		StringBuilder dna = new StringBuilder(); 
+		dna.append("ATATTGATCGTGCAA");
+		
+		Assert.assertEquals("ILIVQ", DNAConcat.translate(dna, 1).toString());
+		Assert.assertEquals("Y#SC", DNAConcat.translate(dna, 2).toString());
+		Assert.assertEquals("IDRA", DNAConcat.translate(dna, 3).toString());
+		Assert.assertEquals("LHDQY", DNAConcat.translate(dna, 4).toString());
+		Assert.assertEquals("CTIN", DNAConcat.translate(dna, 5).toString());
+		Assert.assertEquals("ARSI", DNAConcat.translate(dna, 6).toString());
+	}
 	
 	@Test
 	public void testGlobalAlign() {
