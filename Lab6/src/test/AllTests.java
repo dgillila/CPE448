@@ -33,10 +33,19 @@ public class AllTests {
 	@Test
 	public void testApplication() {
 		try {
-			DNAConcat.processFiles("C:\\Users\\Daniel\\Documents\\D_erecta_2nd_3L_control_fasta1.zip", "C:\\Users\\Daniel\\Documents\\D_erecta_2nd_3L_control_gff1.zip");
+//			DNAConcat.processFiles("C:\\Users\\Daniel\\Documents\\D_erecta_2nd_3L_control_fasta1.zip", "C:\\Users\\Daniel\\Documents\\D_erecta_2nd_3L_control_gff1.zip");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	
+	@Test
+	public void testGlobalAlign() {
+		Assert.assertEquals(1, DNAConcat.globalAlign("test", "not close", "test"));
+		Assert.assertEquals(20, DNAConcat.globalAlignHelper("test", "test"));
+		Assert.assertEquals(11, DNAConcat.globalAlignHelper("test", "tes"));
+		Assert.assertEquals(11, DNAConcat.globalAlignHelper("test", "tesf"));
+		Assert.assertEquals(11, DNAConcat.globalAlignHelper("tes", "test"));
+	}
 }

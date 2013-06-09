@@ -78,7 +78,11 @@ public class DNAConcat {
 					}
 					
 					//TODO do a comparison of gene names (and locations) to see if we've already got it
-					currentGFF.genes.add(gene);
+					if(!geneMatch(gene, currentGFF.genes)) {
+						currentGFF.genes.add(gene);
+					} else {
+						System.out.println("GENE MATCH");
+					}
 				}
 			}
 			
@@ -114,6 +118,96 @@ public class DNAConcat {
 		deleteTempDir(gffDir);
 		
 		return "Complete";
+	}
+	
+	
+	public static boolean geneMatch(Gene toCompare, List<Gene> current) {
+		
+		for(Gene g : current) {
+			if(toCompare.getName().equals(g.getName())) {
+				if(toCompare.getIsoforms().size() == g.getIsoforms().size()) {
+					if(matchIsoforms(toCompare.getIsoforms(), g.getIsoforms())) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean matchIsoforms(List<Isoform> a, List<Isoform> b) {
+		int i = 0;
+		
+		for(Isoform i1 : a) {
+			for(Isoform i2 : b) {
+				if(i1.getName().equals(i2.getName())) {
+					i++;
+					continue;
+				}
+			}
+		}
+		
+		return i == a.size();
+	}
+	
+	/**
+	 * Does global alignment for gene sequences. Returns 1 if the first argument
+	 * is closer to the t string, otherwise returns 2
+	 * 
+	 * @param s1
+	 * @param s2
+	 * @param t
+	 * @return
+	 */
+	public static int globalAlign(String s1, String s2, String t) {
+		
+		int one = globalAlignHelper(s1, t);
+		int two = globalAlignHelper(s2, t);
+		
+		return one > two ? 1 : 2;
+	}
+	
+	/**
+	 * 
+	 * Returns the score of the global alignment between the two strings
+	 * 
+	 * @param one
+	 * @param two
+	 * @return
+	 */
+	public static int globalAlignHelper(String one, String two) {
+		int d = -4;
+		int matrix[][] = new int[one.length()+1][two.length()+1];
+		
+		for(int i = 0; i <= one.length(); i++) {
+			matrix[i][0] = d*i;
+		}
+		for(int j = 0; j <= two.length(); j++) {
+			matrix[0][j] = d*j;
+		}
+		
+		for(int i = 1; i <= one.length(); i++) {
+			for(int j = 1; j <= two.length(); j++) {
+				
+				boolean match = one.charAt(i-1) == two.charAt(j-1);
+				int diag = matrix[i-1][j-1] + (match ? 5 : d);
+				int h = matrix[i-1][j] + d;
+				int v = matrix[i][j-1] + d;
+				
+				if(h >= diag && h >= v) {
+					matrix[i][j] = h;
+				}
+				if(v >= diag && v >= h) {
+					matrix[i][j] = v;
+				}
+				if(diag >= h && diag >= v) {
+					matrix[i][j] = diag;
+				}
+			}
+		}
+		
+		return matrix[one.length()][two.length()];
 	}
 	
 	/**
