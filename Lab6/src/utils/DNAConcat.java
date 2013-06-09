@@ -97,6 +97,7 @@ public class DNAConcat {
 				FileWriter fw = new FileWriter(fastaToWrite.getAbsoluteFile());
 				BufferedWriter writer = new BufferedWriter(fw);
 
+				writer.write(">INFO\n\n");
 				writer.write(currentFASTA.toString());
 				writer.close();
 				
