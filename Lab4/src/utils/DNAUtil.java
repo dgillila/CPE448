@@ -179,7 +179,7 @@ public class DNAUtil {
 
 				ArrayList<SuffixTreeNode> leaves = new ArrayList<SuffixTreeNode>();
 				String label = SuffixTree.getPathLabel(repeatNode);
-				System.out.println("Label: " + label.length());
+				//System.out.println("Label: " + label.length());
 				SuffixTree.getLeafNodesFromNode(repeatNode, leaves);
 				for(SuffixTreeNode leaf : leaves)
 				{
