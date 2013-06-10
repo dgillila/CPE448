@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Math;
 
 import model.Gene;
 import model.Isoform;
@@ -9,6 +10,11 @@ import model.Options;
 
 public class DNAUtil {
 
+    
+    public static double getFoldEnrichment(int patternLength, int observedFrequency, int totalLength) {
+            double expectedValue = Math.pow(.25, patternLength) * (totalLength);
+            return observedFrequency / expectedValue;      
+    }
 	
 	public static String calculateResults(Options o) throws Exception {
 	
@@ -81,7 +87,14 @@ public class DNAUtil {
 								{
 									String leafString = SuffixTree.getPathLabel(leaf);
 									int startingPos = dnaSubSequence.length() - leafString.length() + 2;
-									results += "Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+repeat.length()-1) + "\n";
+									
+									if(DNAUtil.getFoldEnrichment(repeat.length(), leaves.size(), dnaSubSequence.length()) >= o.threshholdVal) {
+										results += "Repeat: " + repeat + ", Size: " + repeat.length() + 
+												", Number of occurrences: " + leaves.size() + 
+												", Fold Enrichment: " + DNAUtil.getFoldEnrichment(repeat.length(), leaves.size(), dnaSubSequence.length()) +
+												", Starting Position in Original Sequence: " + startingPos + 
+												", Ending Position in Original Sequence: " + (startingPos+repeat.length()-1) + "\n";
+									}
 								}
 								leaves.clear();
 							}
@@ -123,7 +136,12 @@ public class DNAUtil {
 							{
 								String leafString = SuffixTree.getPathLabel(leaf);
 								int startingPos = dnaSubSequence.length() - leafString.length() + 2;
-								results += "Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+label.length()-1) + "\n";
+								results += "Repeat: " + label + 
+										", Size: " + label.length() + 
+										", Number of occurrences: " + leaves.size() + 
+										", Fold Enrichment: " + DNAUtil.getFoldEnrichment(label.length(), leaves.size(), dnaSubSequence.length()) +
+										", Starting Position in Original Sequence: " + startingPos + 
+										", Ending Position in Original Sequence: " + (startingPos+label.length()-1) + "\n";
 							}
 							leaves.clear();
 						}
@@ -161,7 +179,15 @@ public class DNAUtil {
 						//System.out.println("Repeats: " + repeats.size() + ", Count: " + c + ", Leaves: " + leaves.size() + ", Count: " + count++);
 						String leafString = SuffixTree.getPathLabel(leaf);
 						int startingPos = dnaSubSequence.length() - leafString.length() + 2;
-						results += "Repeat: " + repeat + ", Size: " + repeat.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+repeat.length()-1) + "\n";
+						if(DNAUtil.getFoldEnrichment(repeat.length(), leaves.size(), dnaSubSequence.length()) > o.threshholdVal) {
+							results += "Repeat: " + repeat + 
+									", Size: " + repeat.length() + 
+									", Number of occurrences: " + leaves.size() + 
+									", Fold Enrichment: " + DNAUtil.getFoldEnrichment(repeat.length(), leaves.size(), dnaSubSequence.length()) +
+									", Starting Position in Original Sequence: " + startingPos + 
+									", Ending Position in Original Sequence: " + (startingPos+repeat.length()-1) + 
+									"\n";
+						}
 					}
 					//c++;
 					leaves.clear();
@@ -185,7 +211,13 @@ public class DNAUtil {
 				{
 					String leafString = SuffixTree.getPathLabel(leaf);
 					int startingPos = dnaSubSequence.length() - leafString.length() + 2;
-					results += "Repeat: " + label + ", Size: " + label.length() + ", Number of occurrences: " + leaves.size() + ", Starting Position in Original Sequence: " + startingPos + ", Ending Position in Original Sequence: " + (startingPos+label.length()-1) + "\n";
+					results += "Repeat: " + label + 
+							", Size: " + label.length() + 
+							", Number of occurrences: " + leaves.size() + 
+							", Fold Enrichment: " + DNAUtil.getFoldEnrichment(label.length(), leaves.size(), dnaSubSequence.length()) +
+							", Starting Position in Original Sequence: " + startingPos + 
+							", Ending Position in Original Sequence: " + (startingPos+label.length()-1) + 
+							"\n";
 				}
 				leaves.clear();
 			}

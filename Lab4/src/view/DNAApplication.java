@@ -327,6 +327,11 @@ public class DNAApplication extends JFrame {
 				} catch (Exception ex) {
 				}
 			}
+			
+			try {
+				o.threshholdVal = Double.parseDouble(filterEnrichmentThresholdField.getText());
+			} catch (Exception ex) {
+			}
 
 			ActionThread thread = new ActionThread();
 			thread.setOptions(o);
